@@ -100,17 +100,17 @@ export function Footer() {
                 <FaMapMarkerAlt className="mt-1 mr-3 text-primary shrink-0" />
                 <span className="text-secondary-foreground/80 text-sm leading-relaxed">
                   Swami Bharmanand Gurukul,<br />
-                  Pundri, Kaithal,<br />
-                  Haryana - 136026, India
+                  Jind Road, Pundri,<br />
+                  Kaithal, Haryana, India
                 </span>
               </li>
               <li className="flex items-center">
                 <FaPhoneAlt className="mr-3 text-primary shrink-0" />
-                <span className="text-secondary-foreground/80">+91-1746-000000</span>
+                <span className="text-secondary-foreground/80">+91 92551 45421 / +91 99961 22410</span>
               </li>
               <li className="flex items-center">
                 <FaEnvelope className="mr-3 text-primary shrink-0" />
-                <span className="text-secondary-foreground/80">info@sbgurukul.edu.in</span>
+                <span className="text-secondary-foreground/80">gurukulbanipundri@gmail.com</span>
               </li>
             </ul>
           </div>

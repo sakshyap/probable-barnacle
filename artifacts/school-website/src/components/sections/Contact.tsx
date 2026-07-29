@@ -32,8 +32,8 @@ export function Contact() {
                   <Phone className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-foreground mb-2">Call Us</h3>
-                <p className="text-muted-foreground text-sm">+91 1746 000000</p>
-                <p className="text-muted-foreground text-sm">+91 98765 43210</p>
+                <p className="text-muted-foreground text-sm">+91 92551 45421</p>
+                <p className="text-muted-foreground text-sm">+91 99961 22410</p>
               </div>
 
               <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center hover:border-primary/50 transition-colors">
@@ -41,8 +41,8 @@ export function Contact() {
                   <Mail className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-foreground mb-2">Email Us</h3>
-                <p className="text-muted-foreground text-sm">info@sbgurukul.edu.in</p>
-                <p className="text-muted-foreground text-sm">admissions@sbgurukul.edu.in</p>
+                <p className="text-muted-foreground text-sm">gurukulbanipundri@gmail.com</p>
+                <p className="text-muted-foreground text-sm">www.sbgpundri.com</p>
               </div>
             </div>
 
@@ -54,8 +54,8 @@ export function Contact() {
                 <h3 className="font-bold text-foreground mb-2">Campus Address</h3>
                 <p className="text-muted-foreground">
                   Swami Bharmanand Gurukul,<br />
-                  State Highway 8, Pundri,<br />
-                  District Kaithal, Haryana - 136026, India
+                  Jind Road, Pundri,<br />
+                  District Kaithal, Haryana, India
                 </p>
               </div>
             </div>
