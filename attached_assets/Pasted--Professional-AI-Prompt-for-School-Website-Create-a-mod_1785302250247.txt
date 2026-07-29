@@ -1,0 +1,166 @@
+# Professional AI Prompt for School Website
+
+Create a modern, premium, fully responsive, and professional website for **Swami Bharmanand Gurukul, Pundri, Kaithal (Haryana), India**.
+
+## Design Requirements
+
+* Elegant and clean UI with a traditional Indian Gurukul theme.
+* Color Palette:
+
+  * Saffron (#FF9933)
+  * White (#FFFFFF)
+  * Dark Blue (#0A2540)
+  * Light Gold (#F5E6A7)
+* Smooth animations and scrolling effects.
+* Mobile-first responsive design.
+* Fast loading and SEO-friendly structure.
+* Modern typography with professional spacing.
+
+## Website Sections
+
+### 1. Hero Section
+
+* Large full-width banner.
+* School name:
+  **Swami Bharmanand Gurukul**
+* Subtitle:
+  **"ज्ञान • संस्कार • अनुशासन"**
+* Short introduction highlighting quality education, Indian culture, discipline, and holistic development.
+* Two CTA buttons:
+
+  * Apply for Admission
+  * Contact Us
+
+### 2. About Us
+
+Include:
+
+* School history
+* Mission
+* Vision
+* Principal's message
+* Gurukul philosophy
+
+### 3. Why Choose Us
+
+Display attractive cards with icons:
+
+* Experienced Faculty
+* Smart Classrooms
+* Value-Based Education
+* Sports Facilities
+* Computer Lab
+* Library
+* Cultural Activities
+* Safe Campus
+* Discipline
+* Personality Development
+
+### 4. Academic Programs
+
+Cards for:
+
+* Primary
+* Middle School
+* Senior Secondary
+* Science
+* Commerce
+* Arts
+
+### 5. Facilities
+
+Beautiful grid with icons/images:
+
+* Smart Classes
+* Science Labs
+* Computer Lab
+* Library
+* Hostel (if available)
+* Sports Ground
+* Transport
+* CCTV Security
+* Medical Facility
+
+### 6. Photo Gallery
+
+Responsive image gallery with lightbox effect.
+
+### 7. Latest News & Announcements
+
+Cards for:
+
+* Admissions Open
+* Exam Schedule
+* Holiday Notice
+* Events
+* Results
+
+### 8. Achievements
+
+Animated counters:
+
+* Students
+* Teachers
+* Awards
+* Years of Excellence
+
+### 9. Testimonials
+
+Student and parent reviews in a slider.
+
+### 10. Admission Section
+
+Professional admission information with:
+
+* Admission Process
+* Eligibility
+* Required Documents
+* Apply Now button
+
+### 11. Contact Section
+
+Include:
+
+* School Address:
+  Swami Bharmanand Gurukul,
+  Pundri, Kaithal, Haryana, India
+* Phone Number
+* Email Address
+* Google Maps integration
+* Contact Form
+
+### 12. Footer
+
+Include:
+
+* Quick Links
+* Social Media Icons
+* Contact Information
+* Copyright
+* Privacy Policy
+* Terms & Conditions
+
+## Additional Features
+
+* Sticky navigation bar
+* Dropdown menus
+* Dark/Light mode toggle
+* Image lazy loading
+* Scroll-to-top button
+* Animated statistics
+* FAQ section
+* SEO optimization
+* Social media integration
+* WhatsApp floating button
+* Fully accessible design
+
+## Technical Requirements
+
+* HTML5
+* Tailwind CSS
+* JavaScript
+* Clean and reusable components
+* Responsive on Desktop, Tablet, and Mobile
+* Optimized performance and modern UI/UX
+
+The final website should have a premium educational look similar to top Indian school websites, with smooth animations, professional layouts, attractive visuals, and an elegant user experience that reflects discipline, culture, and academic excellence.
