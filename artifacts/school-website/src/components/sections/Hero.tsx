@@ -36,9 +36,7 @@ export function Hero() {
             <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary border border-primary/30 text-sm font-semibold tracking-wider uppercase mb-4 backdrop-blur-sm">
               Est. 1999 • 25 Years of Excellence
             </span>
-            <h2 className="hindi-text text-3xl md:text-4xl text-accent mb-2 font-medium drop-shadow-lg">
-              ज्ञान • संस्कार • अनुशासन
-            </h2>
+
             <h1 className="text-5xl md:text-7xl font-bold text-white font-serif leading-tight drop-shadow-xl">
               Swami Bharmanand <span className="text-primary">Gurukul</span>
             </h1>
