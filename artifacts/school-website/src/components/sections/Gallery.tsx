@@ -4,21 +4,9 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 import studentsImg from '@assets/image_1785474392844.png';
-import eventsImg from '@assets/generated_images/gallery-events.jpg';
-import sportsImg from '@assets/generated_images/gallery-sports.jpg';
-import classroomImg from '@assets/generated_images/gallery-classroom.jpg';
-import assemblyImg from '@assets/generated_images/gallery-assembly.jpg';
-import yogaImg from '@assets/generated_images/gallery-yoga.jpg';
-import scienceFairImg from '@assets/generated_images/gallery-science-fair.jpg';
 
 const images = [
-  { id: 1, src: studentsImg, alt: 'Students — School Events & Activities', span: 'col-span-1 md:col-span-2 row-span-2' },
-  { id: 2, src: assemblyImg, alt: 'Morning Assembly', span: 'col-span-1 md:col-span-2 row-span-2' },
-  { id: 3, src: classroomImg, alt: 'Classroom Learning', span: 'col-span-1 row-span-1' },
-  { id: 4, src: sportsImg, alt: 'Annual Sports Day', span: 'col-span-1 row-span-1' },
-  { id: 5, src: eventsImg, alt: 'Cultural Events', span: 'col-span-1 row-span-2' },
-  { id: 6, src: yogaImg, alt: 'Morning Yoga Session', span: 'col-span-1 md:col-span-2 row-span-1' },
-  { id: 7, src: scienceFairImg, alt: 'Science Fair', span: 'col-span-1 row-span-1' },
+  { id: 1, src: studentsImg, alt: 'School Events & Activities', span: 'col-span-1 md:col-span-3 row-span-2' },
 ];
 
 export function Gallery() {
