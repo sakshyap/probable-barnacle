@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Star, Shield, Users } from 'lucide-react';
-import principalImg from '@assets/generated_images/principal.jpg';
+import principalImg from '@assets/image_1785474123355.png';
 
 export function About() {
   const containerVariants = {
@@ -78,8 +78,8 @@ export function About() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-white">
-                <h3 className="text-2xl font-bold font-serif">Dr. Rajesh Sharma</h3>
-                <p className="text-accent font-medium mb-4">Principal</p>
+                <h3 className="text-2xl font-bold font-serif">Our Principal</h3>
+                <p className="text-accent font-medium mb-4">Swami Bharmanand Gurukul, Pundri</p>
                 <p className="text-sm italic text-white/90 leading-relaxed border-l-2 border-primary pl-4">
                   "Education is not merely the accumulation of facts; it is the awakening of the soul. At our Gurukul, we nurture the intellect, discipline the body, and purify the heart."
                 </p>
