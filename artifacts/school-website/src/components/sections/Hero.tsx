@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import heroImg from '@assets/generated_images/hero.jpg';
+import heroImg from '@assets/image_1785474626517.png';
 
 export function Hero() {
   const scrollTo = (id: string) => {
@@ -15,14 +15,14 @@ export function Hero() {
     <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 via-secondary/70 to-secondary/40 mix-blend-multiply z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90 z-10" />
         <img
           src={heroImg}
-          alt="Sunrise over Swami Bharmanand Gurukul campus"
-          className="w-full h-full object-cover object-center"
+          alt="Swami Bharmanand Gurukul Banner"
+          className="w-full h-full object-cover object-center blur-sm scale-105"
           loading="eager"
         />
+        <div className="absolute inset-0 bg-[#0A2540]/92 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent z-10" />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-20 pt-20">
