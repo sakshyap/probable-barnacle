@@ -1,4 +1,5 @@
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import logoImg from '@assets/image_1785473819970.png';
 
 export function Footer() {
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -15,9 +16,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           
           <div className="space-y-4">
-            <div>
-              <h3 className="text-2xl font-serif font-bold text-white mb-1">Swami Bharmanand Gurukul</h3>
-              <p className="text-primary font-medium hindi-text">स्वामी ब्रह्मानंद गुरुकुल</p>
+            <div className="flex items-center gap-3">
+              <img
+                src={logoImg}
+                alt="Swami Bharmanand Gurukul Logo"
+                className="h-16 w-16 rounded-full object-cover shadow-lg shrink-0 border-2 border-primary/40"
+              />
+              <div>
+                <h3 className="text-xl font-serif font-bold text-white mb-0.5 leading-tight">Swami Bharmanand Gurukul</h3>
+                <p className="text-primary font-medium hindi-text text-sm">स्वामी ब्रह्मानंद गुरुकुल</p>
+              </div>
             </div>
             <p className="text-secondary-foreground/80 leading-relaxed text-sm">
               An ancient Indian Gurukul revived in the modern era. Quality education rooted in Indian culture, holistic development, and character building since 25 years.

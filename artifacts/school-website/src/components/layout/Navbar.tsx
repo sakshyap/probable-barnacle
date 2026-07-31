@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'wouter';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Menu, X, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoImg from '@assets/image_1785473819970.png';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -51,14 +51,21 @@ export function Navbar() {
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            className="flex flex-col group"
+            className="flex items-center gap-3 group"
           >
-            <span className={`text-xl md:text-2xl font-bold font-serif transition-colors ${isScrolled ? 'text-primary' : 'text-white drop-shadow-md'}`}>
-              Swami Bharmanand Gurukul
-            </span>
-            <span className={`hindi-text text-sm transition-colors ${isScrolled ? 'text-foreground/80' : 'text-white/90 drop-shadow-md'}`}>
-              स्वामी ब्रह्मानंद गुरुकुल
-            </span>
+            <img
+              src={logoImg}
+              alt="Swami Bharmanand Gurukul Logo"
+              className="h-12 w-12 md:h-14 md:w-14 rounded-full object-cover shadow-md shrink-0"
+            />
+            <div className="flex flex-col">
+              <span className={`text-base md:text-xl font-bold font-serif leading-tight transition-colors ${isScrolled ? 'text-primary' : 'text-white drop-shadow-md'}`}>
+                Swami Bharmanand Gurukul
+              </span>
+              <span className={`hindi-text text-xs md:text-sm leading-tight transition-colors ${isScrolled ? 'text-foreground/70' : 'text-white/85 drop-shadow-md'}`}>
+                स्वामी ब्रह्मानंद गुरुकुल
+              </span>
+            </div>
           </a>
 
           {/* Desktop Nav */}
