@@ -6,7 +6,6 @@ import { Achievements } from '@/components/sections/Achievements';
 import { Features } from '@/components/sections/Features';
 import { Programs } from '@/components/sections/Programs';
 import { Facilities } from '@/components/sections/Facilities';
-import { Gallery } from '@/components/sections/Gallery';
 import { News } from '@/components/sections/News';
 import { Testimonials } from '@/components/sections/Testimonials';
 import { Admissions } from '@/components/sections/Admissions';
@@ -27,7 +26,6 @@ export default function HomePage() {
         <Features />
         <Programs />
         <Facilities />
-        <Gallery />
         <News />
         <Testimonials />
         <Admissions />
