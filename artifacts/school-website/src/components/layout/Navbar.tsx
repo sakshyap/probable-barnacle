@@ -7,12 +7,12 @@ import logoImg from '@assets/image_1785473819970.png';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Programs', href: '#programs' },
-  { name: 'Facilities', href: '#facilities' },
-  { name: 'Admissions', href: '#admissions' },
+  { name: 'Vision', href: '#vision' },
+  { name: 'About Us', href: '#about' },
   { name: 'Gallery', href: '#gallery' },
-  { name: 'News', href: '#news' },
+  { name: 'Mandatory Disclosure', href: '#mandatory-disclosure' },
+  { name: 'CBSE', href: '#cbse' },
+  { name: 'Classes', href: '#classes' },
   { name: 'Contact', href: '#contact' },
 ];
 
