@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Star, Shield, Users } from 'lucide-react';
-import principalImg from '@assets/image_1785474123355.png';
+import { BookOpen, Star, Shield } from 'lucide-react';
 
 export function About() {
   const containerVariants = {
@@ -34,7 +33,7 @@ export function About() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"
+          className="max-w-3xl mx-auto"
         >
           {/* Left Column: Text content */}
           <div className="space-y-8">
@@ -67,36 +66,6 @@ export function About() {
               </div>
             </motion.div>
           </div>
-
-          {/* Right Column: Principal & Philosophy */}
-          <motion.div variants={itemVariants} className="relative">
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-secondary-foreground">
-              <img 
-                src={principalImg} 
-                alt="Principal of Swami Bharmanand Gurukul" 
-                className="w-full aspect-[4/5] object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-white">
-                <h3 className="text-2xl font-bold font-serif">Our Principal</h3>
-                <p className="text-accent font-medium mb-4">Swami Bharmanand Gurukul, Pundri</p>
-                <p className="text-sm italic text-white/90 leading-relaxed border-l-2 border-primary pl-4">
-                  "Education is not merely the accumulation of facts; it is the awakening of the soul. At our Gurukul, we nurture the intellect, discipline the body, and purify the heart."
-                </p>
-              </div>
-            </div>
-
-            {/* Floating badge */}
-            <div className="absolute -bottom-6 -left-6 md:-left-12 bg-white dark:bg-card p-4 rounded-xl shadow-xl border border-border flex items-center gap-4 z-20">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                <Users className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">25+</p>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Years of Legacy</p>
-              </div>
-            </div>
-          </motion.div>
 
         </motion.div>
       </div>
