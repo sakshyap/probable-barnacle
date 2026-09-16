@@ -47,3 +47,12 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# large archives and junk
+mywebsite.zip
+zip
