@@ -146,7 +146,21 @@ Disallow: /dashboard
 Sitemap: https://www.sbgpundri.com/sitemap.xml
 ```
 
-Sab crawlers ko full access diya gaya hai. `/api` (backend API server `app.use("/api", router)`), `/admin` aur `/dashboard` ko disallow kiya gaya hai. Sitemap line abhi placeholder hai (sitemap.xml live hone par hi kaam karegi). Hubli `public/robots.txt` — Vite build `dist/public` mein copy karta hai, deploypar `/robots.txt` pe serve hota hai.
+Sab crawlers ko full access diya gaya hai. `/api` (backend API server `app.use("/api", router)`), `/admin` aur `/dashboard` ko disallow kiya gaya hai. `public/robots.txt` — Vite build `dist/public` mein copy karta hai, deploy par `/robots.txt` pe serve hota hai.
+
+### sitemap.xml
+`public/sitemap.xml` mein 11 URLs (saare SPA routes) — `lastmod` 2026-09-18, `changefreq`/`priority` per-page set:
+
+| Loc | Priority | Changefreq |
+|-----|----------|------------|
+| `/` | 1.0 | weekly |
+| `/about`, `/academics`, `/admissions`, `/contact` | 0.9 | monthly |
+| `/facilities`, `/cbse` | 0.8 | monthly |
+| `/gallery` | 0.7 | monthly |
+| `/news` | 0.7 | weekly |
+| `/privacy-policy`, `/terms` | 0.3 | yearly |
+
+robots.txt ki `Sitemap: https://www.sbgpundri.com/sitemap.xml` line ab real file se match karti hai (deploy par `\`/sitemap.xml` pe serve hogi).
 
 ### Other On-Page SEO Richness (already done)
 - **Open Graph / Facebook** tags (`og:type`, `og:url`, `og:site_name`, `og:title`, `og:description`, `og:image` 1200x630, `og:locale = en_IN`)
@@ -161,7 +175,7 @@ Sab crawlers ko full access diya gaya hai. `/api` (backend API server `app.use("
 
 ## 3. Pending / To-Do Items
 
-- [ ] **`sitemap.xml` banai jaani hai** — abhi project mein kahin bhi exists nahi karti. Saare URLs ko include karna: `/`, `/about`, `/academics`, `/facilities`, `/gallery`, `/admissions`, `/news`, `/cbse`, `/contact`, `/privacy-policy`, `/terms`.
+- [x] **`sitemap.xml` banai gayi hai** — `public/sitemap.xml` (11 URLs: `/`, `/about`, `/academics`, `/facilities`, `/gallery`, `/admissions`, `/news`, `/cbse`, `/contact`, `/privacy-policy`, `/terms`), deploy par `/sitemap.xml` pe serve hogi.
 - [ ] **Google Search Console** mein domain verify + sitemap submit karna.
 - [ ] **Google Analytics / GA4** set up karna — abhi code mein koi tracking (gtag/analytics) nahi hai.
 - [ ] **`json-ld sameAs` (social profiles)** add karna — Footer ke social icons abhi `/contact` par point karte hain (placeholder). Real Facebook/Instagram/YouTube URLs milein to `School` node mein `sameAs` array add karna.
@@ -176,7 +190,7 @@ Sab crawlers ko full access diya gaya hai. `/api` (backend API server `app.use("
 
 1. **Canonical URL confirmation** — domain live hone par `https://www.sbgpundri.com/` par redirect verify karna (www vs non-www).
 2. **robots.txt test** — Google Search Console ke robots.txt tester se verify karna.
-3. **sitemap.xml upload** — `public/sitemap.xml` banakar deploy karna, phir robots.txt mein sitemap URL add karna.
+3. **sitemap.xml verify** — `public/sitemap.xml` already ban chuki hai; deploy ke baad `https://www.sbgpundri.com/sitemap.xml` (robots.txt me URL ke saath) Google par serve hona confirm karna.
 4. **Google Search Console:**
    - Domain property add karke verify karna (DNS ya HTML tag method)
    - Sitemap submit karna
