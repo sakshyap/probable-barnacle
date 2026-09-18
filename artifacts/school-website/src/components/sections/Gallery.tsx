@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
-import studentsImg from '@assets/image_1785474392844.png';
+import studentsImg from '@assets/optimized/students.webp';
 
 const images = [
-  { id: 1, src: studentsImg, alt: 'School Events & Activities', span: 'col-span-1 md:col-span-3 row-span-2' },
+  { id: 1, src: studentsImg, alt: 'Students of Swami Bharmanand Gurukul during a school event in Pundri', span: 'col-span-1 md:col-span-3 row-span-2' },
 ];
 
 export function Gallery() {
@@ -43,14 +43,16 @@ export function Gallery() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[200px] gap-4">
           {images.map((img, index) => (
-            <motion.div
+            <motion.button
               key={img.id}
+              type="button"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative group overflow-hidden rounded-xl cursor-pointer ${img.span}`}
+              className={`relative group overflow-hidden rounded-xl cursor-pointer text-left ${img.span}`}
               onClick={() => openLightbox(index)}
+              aria-label={`Open image: ${img.alt}`}
             >
               <img 
                 src={img.src} 
@@ -63,7 +65,7 @@ export function Gallery() {
                   {img.alt}
                 </p>
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </div>

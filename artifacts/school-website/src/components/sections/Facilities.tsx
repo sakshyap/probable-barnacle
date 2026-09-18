@@ -1,22 +1,22 @@
 import { motion } from 'framer-motion';
-import smartClassImg from '@assets/generated_images/facility-smart-class.jpg';
-import scienceImg from '@assets/generated_images/facility-science.jpg';
-import computerImg from '@assets/generated_images/facility-computer.jpg';
-import libraryImg from '@assets/generated_images/facility-library.jpg';
-import hostelImg from '@assets/generated_images/facility-hostel.jpg';
-import sportsImg from '@assets/generated_images/facility-sports.jpg';
-import transportImg from '@assets/generated_images/facility-transport.jpg';
-import medicalImg from '@assets/generated_images/facility-medical.jpg';
+import smartClassImg from '@assets/optimized/facility-smart-class.webp';
+import scienceImg from '@assets/optimized/facility-science.webp';
+import computerImg from '@assets/optimized/facility-computer.webp';
+import libraryImg from '@assets/optimized/facility-library.webp';
+import hostelImg from '@assets/optimized/facility-hostel.webp';
+import sportsImg from '@assets/optimized/facility-sports.webp';
+import transportImg from '@assets/optimized/facility-transport.webp';
+import medicalImg from '@assets/optimized/facility-medical.webp';
 
 const facilities = [
-  { id: 1, name: 'Smart Classrooms', img: smartClassImg, desc: 'Interactive panels for engaging visual learning.' },
-  { id: 2, name: 'Science Labs', img: scienceImg, desc: 'Well-equipped Physics, Chemistry, and Bio labs.' },
-  { id: 3, name: 'Computer Lab', img: computerImg, desc: 'Modern systems with high-speed internet.' },
-  { id: 4, name: 'Rich Library', img: libraryImg, desc: 'Vast collection of academic and spiritual texts.' },
-  { id: 5, name: 'Gurukul Hostel', img: hostelImg, desc: 'Disciplined and warm residential facilities.' },
-  { id: 6, name: 'Sports Complex', img: sportsImg, desc: 'Expansive grounds for physical development.' },
-  { id: 7, name: 'Transport Fleet', img: transportImg, desc: 'Safe school buses covering a 30km radius.' },
-  { id: 8, name: 'Medical Facility', img: medicalImg, desc: 'On-campus infirmary with trained staff.' },
+  { id: 1, name: 'Smart Classrooms', img: smartClassImg, alt: 'Swami Bharmanand Gurukul smart classroom in Pundri', desc: 'Interactive panels for engaging visual learning.' },
+  { id: 2, name: 'Science Labs', img: scienceImg, alt: 'Swami Bharmanand Gurukul science laboratory in Pundri', desc: 'Well-equipped Physics, Chemistry, and Bio labs.' },
+  { id: 3, name: 'Computer Lab', img: computerImg, alt: 'Swami Bharmanand Gurukul computer lab in Pundri', desc: 'Modern systems with high-speed internet.' },
+  { id: 4, name: 'Rich Library', img: libraryImg, alt: 'Swami Bharmanand Gurukul library in Pundri', desc: 'Vast collection of academic and spiritual texts.' },
+  { id: 5, name: 'Gurukul Hostel', img: hostelImg, alt: 'Swami Bharmanand Gurukul residential hostel in Pundri', desc: 'Disciplined and warm residential facilities.' },
+  { id: 6, name: 'Sports Complex', img: sportsImg, alt: 'Swami Bharmanand Gurukul sports complex playground in Pundri', desc: 'Expansive grounds for physical development.' },
+  { id: 7, name: 'Transport Fleet', img: transportImg, alt: 'Swami Bharmanand Gurukul school bus transport in Pundri', desc: 'Safe school buses covering a 30km radius.' },
+  { id: 8, name: 'Medical Facility', img: medicalImg, alt: 'Swami Bharmanand Gurukul medical infirmary in Pundri', desc: 'On-campus infirmary with trained staff.' },
 ];
 
 export function Facilities() {
@@ -33,9 +33,9 @@ export function Facilities() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {facilities.map((facility, index) => (
-            <motion.div
+            <motion.li
               key={facility.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ export function Facilities() {
             >
               <img 
                 src={facility.img} 
-                alt={facility.name} 
+                alt={facility.alt} 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
               />
@@ -57,9 +57,9 @@ export function Facilities() {
                   {facility.desc}
                 </p>
               </div>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

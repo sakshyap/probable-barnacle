@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Star, Shield } from 'lucide-react';
+import { Link } from 'wouter';
 
 export function About() {
   const containerVariants = {
@@ -47,7 +48,11 @@ export function About() {
                 <span className="text-primary italic">Ready for Tomorrow.</span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Founded in the sacred Gurukul tradition, Swami Bharmanand Gurukul was established to revive the ancient Indian educational philosophy while equipping students with modern competencies. We don't just teach subjects; we mold character.
+                Founded in the sacred Gurukul tradition, Swami Bharmanand Gurukul was established to revive the ancient Indian educational philosophy while equipping students with{" "}
+                <Link href="/academics" className="text-primary font-medium underline underline-offset-4 hover:text-foreground transition-colors">
+                  modern competencies
+                </Link>
+                . We don't just teach subjects; we mold character.
               </p>
             </motion.div>
 

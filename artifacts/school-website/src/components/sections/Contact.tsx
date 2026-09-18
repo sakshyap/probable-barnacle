@@ -90,7 +90,9 @@ export function Contact() {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">Full Name</label>
                   <input 
                     type="text" 
-                    id="name" 
+                    id="name"
+                    name="name"
+                    required
                     className="w-full px-4 py-3 rounded-xl bg-background border border-input focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                     placeholder="John Doe"
                   />
@@ -99,7 +101,8 @@ export function Contact() {
                   <label htmlFor="phone" className="text-sm font-medium text-foreground">Phone Number</label>
                   <input 
                     type="tel" 
-                    id="phone" 
+                    id="phone"
+                    name="phone"
                     className="w-full px-4 py-3 rounded-xl bg-background border border-input focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                     placeholder="+91 98765 43210"
                   />
@@ -110,7 +113,9 @@ export function Contact() {
                 <label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</label>
                 <input 
                   type="email" 
-                  id="email" 
+                  id="email"
+                  name="email"
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-background border border-input focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                   placeholder="john@example.com"
                 />
@@ -120,6 +125,7 @@ export function Contact() {
                 <label htmlFor="subject" className="text-sm font-medium text-foreground">Subject</label>
                 <select 
                   id="subject"
+                  name="subject"
                   className="w-full px-4 py-3 rounded-xl bg-background border border-input focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all appearance-none"
                 >
                   <option value="admission">Admission Enquiry</option>
@@ -132,8 +138,10 @@ export function Contact() {
               <div className="space-y-2">
                 <label htmlFor="message" className="text-sm font-medium text-foreground">Your Message</label>
                 <textarea 
-                  id="message" 
+                  id="message"
+                  name="message"
                   rows={4}
+                  required
                   className="w-full px-4 py-3 rounded-xl bg-background border border-input focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none"
                   placeholder="How can we help you?"
                 ></textarea>

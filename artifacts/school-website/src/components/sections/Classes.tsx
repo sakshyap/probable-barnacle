@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Clock, ChevronRight } from 'lucide-react';
+import { Link, useLocation } from 'wouter';
 
 const classGroups = [
   {
@@ -50,6 +51,8 @@ const classGroups = [
 ];
 
 export function Classes() {
+  const [location] = useLocation();
+
   return (
     <section id="classes" className="py-20 bg-background">
       <div className="container mx-auto px-4 md:px-6">
@@ -68,7 +71,11 @@ export function Classes() {
           </h2>
           <div className="w-20 h-1 bg-primary mx-auto rounded-full mb-4" />
           <p className="text-foreground/60 max-w-2xl mx-auto">
-            From Nursery to Class XII, we offer a structured, CBSE-aligned curriculum with a balance of academics, co-curricular activities, and Vedic learning.
+            From Nursery to Class XII, we offer a structured,{" "}
+            <Link href="/cbse" className="text-primary font-medium underline underline-offset-4 hover:text-foreground transition-colors">
+              CBSE-aligned curriculum
+            </Link>{" "}
+            with a balance of academics, co-curricular activities, and Vedic learning.
           </p>
         </motion.div>
 
@@ -117,6 +124,19 @@ export function Classes() {
             </motion.div>
           ))}
         </div>
+
+        {location !== '/academics' && (
+          <div className="mt-12 text-center">
+            <Link
+              href="/academics"
+              className="inline-flex items-center gap-1 font-semibold text-primary hover:underline underline-offset-4"
+              aria-label="Explore our academic programs in detail"
+            >
+              Explore Our Academic Programs
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

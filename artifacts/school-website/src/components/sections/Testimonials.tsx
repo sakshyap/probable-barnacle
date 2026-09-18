@@ -91,7 +91,7 @@ export function Testimonials() {
             <button
               key={idx}
               onClick={() => setCurrent(idx)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`box-content w-3 h-3 p-4 rounded-full transition-all duration-300 flex items-center justify-center ${
                 current === idx ? 'bg-primary w-8' : 'bg-white/20 hover:bg-white/40'
               }`}
               aria-label={`Go to slide ${idx + 1}`}

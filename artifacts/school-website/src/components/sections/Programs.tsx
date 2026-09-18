@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookA, Atom, Calculator, Palette, Briefcase, Microscope } from 'lucide-react';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 
 const programs = [
@@ -67,8 +68,10 @@ export function Programs() {
               Our curriculum follows the CBSE pattern, deeply integrated with Gurukul values to provide a balanced and rigorous academic experience.
             </p>
           </div>
-          <Button variant="outline" className="shrink-0 border-primary text-primary hover:bg-primary hover:text-white">
-            Download Syllabus
+          <Button asChild variant="outline" className="shrink-0 border-primary text-primary hover:bg-primary hover:text-white">
+            <Link href="/admissions">
+              Apply for Admission
+            </Link>
           </Button>
         </div>
 
@@ -99,12 +102,12 @@ export function Programs() {
                   </p>
                 </div>
                 <div className="px-8 py-4 bg-muted border-t border-border mt-auto">
-                  <a href="#admissions" className="text-sm font-semibold text-primary flex items-center group-hover:translate-x-2 transition-transform">
+                  <Link href="/admissions" className="text-sm font-semibold text-primary flex items-center group-hover:translate-x-2 transition-transform">
                     View Admission Criteria
                     <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
               </motion.div>
             );

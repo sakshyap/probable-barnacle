@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logoImg from '@assets/image_1785473819970.png';
+import logoImg from '@assets/optimized/logo.webp';
 
 const navLinks = [
-  { name: 'Home', href: '#home' },
-  { name: 'Vision', href: '#vision' },
-  { name: 'About Us', href: '#about' },
-  { name: 'Gallery', href: '#gallery' },
-  { name: 'Mandatory Disclosure', href: '#mandatory-disclosure' },
-  { name: 'CBSE', href: '#cbse' },
-  { name: 'Classes', href: '#classes' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Home', href: '/' },
+  { name: 'About', href: '/about' },
+  { name: 'Academics', href: '/academics' },
+  { name: 'Admissions', href: '/admissions' },
+  { name: 'Facilities', href: '/facilities' },
+  { name: 'Gallery', href: '/gallery' },
+  { name: 'News', href: '/news' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [location] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,13 +31,8 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
+  const handleNavClick = () => {
     setMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   return (
@@ -48,10 +45,11 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          <a
-            href="#home"
-            onClick={(e) => handleNavClick(e, '#home')}
+          <Link
+            href="/"
+            onClick={handleNavClick}
             className="flex items-center gap-3 group"
+            aria-label="Swami Bharmanand Gurukul Home"
           >
             <img
               src={logoImg}
@@ -66,32 +64,35 @@ export function Navbar() {
                 स्वामी ब्रह्मानंद गुरुकुल
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-primary ${
-                  isScrolled ? 'text-foreground/80' : 'text-white/90 drop-shadow-sm hover:text-white'
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
-            
+            {navLinks.map((link) => {
+              const isActive = location === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={handleNavClick}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-primary ${
+                    isActive && 'text-primary'
+                  } ${isScrolled ? 'text-foreground/80' : 'text-white/90 drop-shadow-sm hover:text-white'}`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className={`ml-2 rounded-full ${isScrolled ? 'text-foreground' : 'text-white hover:bg-white/20 hover:text-white'}`}
+              aria-label="Toggle theme"
             >
               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
             </Button>
           </nav>
 
@@ -102,16 +103,18 @@ export function Navbar() {
               size="icon"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className={`mr-2 rounded-full ${isScrolled ? 'text-foreground' : 'text-white hover:bg-white/20'}`}
+              aria-label="Toggle theme"
             >
               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </Button>
-            
+
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className={isScrolled ? 'text-foreground' : 'text-white hover:bg-white/20'}
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -129,16 +132,21 @@ export function Navbar() {
             className="lg:hidden bg-background border-b shadow-lg overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1 flex flex-col">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-3 py-3 rounded-md text-base font-medium text-foreground hover:bg-accent/50 hover:text-primary transition-colors border-b border-border/50 last:border-0"
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = location === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={handleNavClick}
+                    className={`px-3 py-3 rounded-md text-base font-medium hover:bg-accent/50 hover:text-primary transition-colors border-b border-border/50 last:border-0 ${
+                      isActive ? 'text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
           </motion.div>
         )}

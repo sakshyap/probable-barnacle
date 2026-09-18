@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, BellRing } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'wouter';
 
 const news = [
   {
@@ -34,6 +35,8 @@ const news = [
 ];
 
 export function News() {
+  const [location] = useLocation();
+
   return (
     <section id="news" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 md:px-6">
@@ -48,17 +51,21 @@ export function News() {
               <p className="text-muted-foreground text-lg mb-8">
                 Keep track of all the latest happenings, announcements, and important dates at the Gurukul.
               </p>
-              <Button className="bg-secondary text-white hover:bg-secondary/90 shadow-lg group">
-                View All Notices
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              {location !== '/news' && (
+                <Button asChild className="bg-secondary text-white hover:bg-secondary/90 shadow-lg group">
+                  <Link href="/news">
+                    View All Notices
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
           
           <div className="lg:w-2/3">
             <div className="space-y-6">
               {news.map((item, index) => (
-                <motion.div
+                <motion.article
                   key={item.id}
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -84,7 +91,7 @@ export function News() {
                   <p className="text-muted-foreground">
                     {item.desc}
                   </p>
-                </motion.div>
+                </motion.article>
               ))}
             </div>
           </div>

@@ -1,15 +1,11 @@
 import { motion } from 'framer-motion';
+import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import heroImg from '@assets/image_1785474626517.png';
+import heroImg from '@assets/optimized/hero-banner.webp';
 
 export function Hero() {
-  const scrollTo = (id: string) => {
-    const element = document.querySelector(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const [, navigate] = useLocation();
 
   return (
     <section id="home" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
@@ -17,9 +13,11 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <img
           src={heroImg}
-          alt="Swami Bharmanand Gurukul Banner"
+          alt="Swami Bharmanand Gurukul school banner in Pundri, Kaithal, Haryana"
           className="w-full h-full object-cover object-center blur-sm scale-105"
           loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-[#0A2540]/92 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent z-10" />
@@ -48,8 +46,14 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl leading-relaxed drop-shadow-md"
           >
-            A sacred place where Vedic discipline meets contemporary education. 
-            We build character, impart quality education rooted in Indian cultural identity, 
+            A sacred place where Vedic discipline meets{" "}
+            <Link
+              href="/academics"
+              className="text-primary underline decoration-primary/50 underline-offset-4 hover:text-white transition-colors"
+            >
+              contemporary education
+            </Link>
+            . We build character, impart quality education rooted in Indian cultural identity,
             and nurture the leaders of tomorrow.
           </motion.p>
 
@@ -62,7 +66,7 @@ export function Hero() {
             <Button
               size="lg"
               className="bg-primary text-white hover:bg-primary/90 text-lg px-8 py-6 rounded-full shadow-[0_0_20px_rgba(255,153,51,0.4)]"
-              onClick={() => scrollTo('#admissions')}
+              onClick={() => navigate('/admissions')}
             >
               Apply for Admission
               <ChevronRight className="ml-2 h-5 w-5" />
@@ -71,7 +75,7 @@ export function Hero() {
               size="lg"
               variant="outline"
               className="text-white border-white/30 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-lg px-8 py-6 rounded-full"
-              onClick={() => scrollTo('#contact')}
+              onClick={() => navigate('/contact')}
             >
               Contact Us
             </Button>
@@ -79,20 +83,25 @@ export function Hero() {
         </div>
       </div>
       
-      <motion.div 
+      <motion.a
+        href="/about"
+        onClick={(e) => {
+          e.preventDefault();
+          navigate('/about');
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.2 }}
+        aria-label="Discover more about the school"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center cursor-pointer"
-        onClick={() => scrollTo('#about')}
       >
         <span className="text-white/70 text-sm mb-2 uppercase tracking-widest font-medium">Discover</span>
-        <motion.div 
-          animate={{ y: [0, 8, 0] }} 
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent"
         />
-      </motion.div>
+      </motion.a>
     </section>
   );
 }

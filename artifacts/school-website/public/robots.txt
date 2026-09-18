@@ -1,2 +1,10 @@
 User-agent: *
 Allow: /
+
+# Block private and backend routes from crawling and indexing
+Disallow: /admin
+Disallow: /api
+Disallow: /dashboard
+
+# XML Sitemap (placeholder - update once sitemap.xml is live)
+Sitemap: https://www.sbgpundri.com/sitemap.xml

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ClipboardList, FileCheck, FileSearch, UserCheck, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
 
 const steps = [
   { icon: ClipboardList, title: 'Submit Application', desc: 'Fill out the registration form online or at the school reception.' },
@@ -95,9 +96,14 @@ export function Admissions() {
 
             <div className="mt-10 pt-8 border-t border-border/50 text-center">
               <p className="font-medium text-foreground mb-6">Admissions for 2024-25 are currently open.</p>
-              <Button size="lg" className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 text-lg py-6 px-10 rounded-full shadow-lg hover:shadow-xl transition-all">
-                Apply Now Online
+              <Button asChild size="lg" className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 text-lg py-6 px-10 rounded-full shadow-lg hover:shadow-xl transition-all">
+                <Link href="/contact">Apply Now Online</Link>
               </Button>
+              <p className="mt-4 text-sm text-muted-foreground">
+                <Link href="/cbse" className="text-primary font-semibold hover:underline underline-offset-4">
+                  CBSE Affiliation &amp; Mandatory Disclosure
+                </Link>
+              </p>
             </div>
           </motion.div>
 

@@ -19,14 +19,14 @@ const disclosureItems = [
 ];
 
 const documents = [
-  { name: 'Affiliation Letter', href: '#' },
-  { name: 'Trust / Society Certificate', href: '#' },
-  { name: 'NOC from State Govt.', href: '#' },
-  { name: 'Recognition Certificate', href: '#' },
-  { name: 'Building Safety Certificate', href: '#' },
-  { name: 'Fire Safety Certificate', href: '#' },
-  { name: 'Self Certification', href: '#' },
-  { name: 'Water, Health & Sanitation Certificate', href: '#' },
+  { name: 'Affiliation Letter', href: '/contact' },
+  { name: 'Trust / Society Certificate', href: '/contact' },
+  { name: 'NOC from State Govt.', href: '/contact' },
+  { name: 'Recognition Certificate', href: '/contact' },
+  { name: 'Building Safety Certificate', href: '/contact' },
+  { name: 'Fire Safety Certificate', href: '/contact' },
+  { name: 'Self Certification', href: '/contact' },
+  { name: 'Water, Health & Sanitation Certificate', href: '/contact' },
 ];
 
 export function MandatoryDisclosure() {
