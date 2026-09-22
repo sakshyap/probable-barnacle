@@ -89,7 +89,8 @@
 `index.html:<46>` mein `application/ld+json` script — `@graph` with **3 schema types**:
 
 1. **`School`** (schema.org; EducationalOrganization ke under)
-   - name, alternateName (Hindi), url, logo, description, foundingDate (1999), telephone, email, PostalAddress (Jind Road, Pundri, Haryana, 136026, IN), GeoCoordinates, `isAccessibleForFree: false`
+   - name, alternateName (Hindi + "Gurukul Pundri" aliases), url, logo, description, foundingDate (1999), telephone, email, PostalAddress (Jind Road, Pundri, Haryana, 136026, IN), GeoCoordinates, `isAccessibleForFree: false`
+   - `contactPoint` — dono real phone numbers (Admission Enquiry: +91 92551 45421, General: +91 99961 22410)
    - `parentOrganization` → CBSE (Central Board of Secondary Education)
    - `areaServed` → Pundri, Kaithal, Haryana
    - `sameAs` intentionally **nahi** hai — social links abhi placeholders hain (real URLs nahi)
