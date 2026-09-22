@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
+import { ChatBot } from '@/components/ChatBot';
 import { ScrollToTop } from '@/components/ScrollToTop';
 
 export function PageLayout({ children }: { children: ReactNode }) {
@@ -18,6 +19,7 @@ export function PageLayout({ children }: { children: ReactNode }) {
       <main>{children}</main>
       <Footer />
       <FloatingWhatsApp />
+      <ChatBot />
       <ScrollToTop />
     </div>
   );
