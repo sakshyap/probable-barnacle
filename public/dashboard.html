@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Student & Course Management</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon">⚡</div>
+        <div class="sidebar-brand-name">AdminPortal</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Management</div>
+
+        <a class="nav-link active" id="nav-students" data-section="students">
+          <div class="nav-link-content">
+            <span style="font-size: 1.1rem;">🎓</span>
+            <span>Students</span>
+          </div>
+          <span class="nav-badge" id="badge-students-count">0</span>
+        </a>
+
+        <a class="nav-link" id="nav-courses" data-section="courses">
+          <div class="nav-link-content">
+            <span style="font-size: 1.1rem;">📚</span>
+            <span>Courses</span>
+          </div>
+          <span class="nav-badge" id="badge-courses-count">0</span>
+        </a>
+
+        <a class="nav-link" id="nav-blog" data-section="blog">
+          <div class="nav-link-content">
+            <span style="font-size: 1.1rem;">✍️</span>
+            <span>Blog</span>
+          </div>
+          <span class="nav-badge" id="badge-posts-count">0</span>
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 1.5rem;">Public Site</div>
+        <a href="/" class="nav-link" style="color: #94a3b8;" title="View Portfolio Website">
+          <div class="nav-link-content">
+            <span style="font-size: 1.1rem;">🌐</span>
+            <span>View Portfolio</span>
+          </div>
+          <span style="font-size: 0.8rem; color: #64748b;">↗</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="user-avatar" id="user-avatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">Administrator</div>
+            <div class="user-role" id="user-email">admin@example.com</div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-logout" id="logout-btn" title="Sign out of Admin session">
+          <span>🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Header Bar -->
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle Menu">
+            ☰
+          </button>
+          <div class="page-title">
+            <h2 id="section-heading">Students Management</h2>
+            <p id="section-subheading">View, enroll, and manage registered students</p>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" class="btn btn-primary" id="btn-quick-add">
+            <span id="btn-quick-icon">+</span>
+            <span id="btn-quick-text">Add Student</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="content-area">
+        <!-- Stats Summary Row -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <p>Total Students</p>
+              <h3 id="stat-total-students">0</h3>
+            </div>
+            <div class="stat-icon blue">🎓</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <p>Total Courses</p>
+              <h3 id="stat-total-courses">0</h3>
+            </div>
+            <div class="stat-icon purple">📚</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <p>Total Blog Posts</p>
+              <h3 id="stat-total-posts">0</h3>
+            </div>
+            <div class="stat-icon indigo">✍️</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <p>Active Courses</p>
+              <h3 id="stat-active-courses">0</h3>
+            </div>
+            <div class="stat-icon green">✅</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <p>Total Capacity Seats</p>
+              <h3 id="stat-total-seats">0</h3>
+            </div>
+            <div class="stat-icon orange">🪑</div>
+          </div>
+        </div>
+
+        <!-- ================= SECTION: STUDENTS ================= -->
+        <section id="section-students" class="management-section active">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-left">
+                <h3>Students Directory</h3>
+                <p>Manage all registered student records and course assignments</p>
+              </div>
+
+              <div class="card-actions">
+                <div class="search-input-wrap">
+                  <input
+                    type="text"
+                    id="search-students"
+                    class="search-input"
+                    placeholder="Search students..."
+                  />
+                </div>
+                <button type="button" class="btn btn-primary" id="open-student-modal">
+                  + Add Student
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table" id="students-table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Email Address</th>
+                    <th>Enrolled Course</th>
+                    <th>Enrolled Date</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="students-tbody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+              <div id="students-empty" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📋</div>
+                <h4>No students found</h4>
+                <p>Click "Add Student" to create your first student entry.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION: COURSES ================= -->
+        <section id="section-courses" class="management-section">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-left">
+                <h3>Course Catalog</h3>
+                <p>Manage courses, seat capacities, and publish statuses</p>
+              </div>
+
+              <div class="card-actions">
+                <div class="search-input-wrap">
+                  <input
+                    type="text"
+                    id="search-courses"
+                    class="search-input"
+                    placeholder="Search courses..."
+                  />
+                </div>
+                <button type="button" class="btn btn-primary" id="open-course-modal">
+                  + Add Course
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table" id="courses-table">
+                <thead>
+                  <tr>
+                    <th>Course Title</th>
+                    <th>Total Seats</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="courses-tbody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+              <div id="courses-empty" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📖</div>
+                <h4>No courses found</h4>
+                <p>Click "Add Course" to create a new curriculum offering.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION: BLOG ================= -->
+        <section id="section-blog" class="management-section">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-left">
+                <h3>Blog Posts Management</h3>
+                <p>Create, edit, and publish articles, news, and learning tips</p>
+              </div>
+
+              <div class="card-actions">
+                <div class="search-input-wrap">
+                  <input
+                    type="text"
+                    id="search-posts"
+                    class="search-input"
+                    placeholder="Search posts by title..."
+                  />
+                </div>
+                <button type="button" class="btn btn-primary" id="open-post-modal">
+                  + Add New Post
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table" id="posts-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="posts-tbody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+              <div id="posts-empty" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">✍️</div>
+                <h4>No blog posts found</h4>
+                <p>Click "Add New Post" to write and publish your first article.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD STUDENT ================= -->
+  <div class="modal-overlay" id="modal-student">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Enroll New Student</h3>
+        <button class="modal-close" data-close-modal="modal-student">&times;</button>
+      </div>
+      <form id="form-add-student">
+        <div class="modal-body">
+          <div class="alert alert-danger" id="student-modal-alert"></div>
+
+          <div class="form-group">
+            <label for="student-name" class="form-label">Full Name</label>
+            <input
+              type="text"
+              id="student-name"
+              class="form-control"
+              placeholder="e.g. Rahul Sharma"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="student-email" class="form-label">Email Address</label>
+            <input
+              type="email"
+              id="student-email"
+              class="form-control"
+              placeholder="e.g. rahul@example.com"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="student-course" class="form-label">Enrolled Course</label>
+            <select id="student-course" class="form-control" required>
+              <option value="">Select a course...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-student">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save-student">
+            Save Student
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD COURSE ================= -->
+  <div class="modal-overlay" id="modal-course">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add New Course</h3>
+        <button class="modal-close" data-close-modal="modal-course">&times;</button>
+      </div>
+      <form id="form-add-course">
+        <div class="modal-body">
+          <div class="alert alert-danger" id="course-modal-alert"></div>
+
+          <div class="form-group">
+            <label for="course-title" class="form-label">Course Title</label>
+            <input
+              type="text"
+              id="course-title"
+              class="form-control"
+              placeholder="e.g. Full Stack Web Development"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="course-seats" class="form-label">Available Seats</label>
+            <input
+              type="number"
+              id="course-seats"
+              class="form-control"
+              placeholder="e.g. 30"
+              min="1"
+              max="500"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-checkbox-label">
+              <input type="checkbox" id="course-active" class="form-checkbox" checked />
+              <span>Mark as Active (Available for enrollment)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-course">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save-course">
+            Save Course
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD / EDIT BLOG POST ================= -->
+  <div class="modal-overlay" id="modal-post">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-post-title">Add New Blog Post</h3>
+        <button class="modal-close" data-close-modal="modal-post">&times;</button>
+      </div>
+      <form id="form-post">
+        <input type="hidden" id="post-id" value="" />
+        <div class="modal-body modal-body-scroll">
+          <div class="alert alert-danger" id="post-modal-alert"></div>
+
+          <div class="form-group">
+            <label for="post-title" class="form-label">Post Title *</label>
+            <input
+              type="text"
+              id="post-title"
+              class="form-control"
+              placeholder="e.g. 10 Breakthroughs in Web Development"
+              required
+            />
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="post-author" class="form-label">Author *</label>
+              <input
+                type="text"
+                id="post-author"
+                class="form-control"
+                placeholder="e.g. Dr. Sarah Jenkins"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="post-category" class="form-label">Category *</label>
+              <select id="post-category" class="form-control" required>
+                <option value="AI">AI</option>
+                <option value="Digital Marketing">Digital Marketing</option>
+                <option value="Announcements">Announcements</option>
+                <option value="Tips">Tips</option>
+                <option value="Web Development">Web Development</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="post-status" class="form-label">Status *</label>
+              <select id="post-status" class="form-control" required>
+                <option value="Published">Published</option>
+                <option value="Draft">Draft</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="post-image" class="form-label">Featured Image URL</label>
+              <input
+                type="url"
+                id="post-image"
+                class="form-control"
+                placeholder="https://images.unsplash.com/..."
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="post-excerpt" class="form-label">Short Description / Excerpt</label>
+            <textarea
+              id="post-excerpt"
+              class="form-control"
+              rows="2"
+              placeholder="Brief summary displayed on article cards..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="post-content" class="form-label">Full Content *</label>
+            <textarea
+              id="post-content"
+              class="form-control"
+              rows="6"
+              placeholder="Full text or markdown content for the blog article..."
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-post">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save-post">
+            Save Post
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: READ BLOG ARTICLE ================= -->
+  <div class="modal-overlay" id="modal-read-post">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span id="read-post-category" class="badge badge-category">AI</span>
+          <span id="read-post-status" class="badge badge-published">Published</span>
+        </div>
+        <button class="modal-close" data-close-modal="modal-read-post">&times;</button>
+      </div>
+      <div class="modal-body modal-body-scroll">
+        <h2 id="read-post-title" style="font-size: 1.45rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; line-height: 1.35;"></h2>
+        <div style="display: flex; gap: 1rem; color: #64748b; font-size: 0.85rem; margin-bottom: 1.25rem;">
+          <span>👤 <strong id="read-post-author" style="color: #334155;"></strong></span>
+          <span>📅 <span id="read-post-date"></span></span>
+        </div>
+        <div id="read-post-image-wrap" style="margin-bottom: 1.25rem; display: none;">
+          <img id="read-post-image" src="" alt="Featured image" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px;" />
+        </div>
+        <div id="read-post-excerpt" style="font-size: 1rem; color: #475569; font-style: italic; border-left: 3px solid var(--primary); padding-left: 1rem; margin-bottom: 1.25rem;"></div>
+        <div id="read-post-content" style="font-size: 0.95rem; line-height: 1.7; color: #1e293b; white-space: pre-line;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-read-post">
+          Close Article
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DELETE CONFIRMATION ================= -->
+  <div class="modal-overlay" id="modal-delete">
+    <div class="modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="modal-close" data-close-modal="modal-delete">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-prompt-text" style="color: #475569; font-size: 0.95rem;">
+          Are you sure you want to permanently delete this item? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-delete">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete" style="padding: 0.7rem 1.25rem;">
+          Delete Permanently
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

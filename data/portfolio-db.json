@@ -1,0 +1,441 @@
+{
+  "admin": {
+    "id": "pf-admin-1",
+    "email": "sakshikashyap6857@gmail.com",
+    "name": "Sakshi Kashyap",
+    "passwordHash": "$2b$12$JayQ72lU6MIansC.grvLN.eASH8yVhHbbdPat4eozeYOuLs6r1kTm",
+    "role": "portfolio-admin",
+    "updatedAt": "2026-09-30T06:17:44.526Z"
+  },
+  "profile": {
+    "name": "Sakshi",
+    "title": "Digital Marketing with AI Specialist",
+    "shortIntro": "Bridging creative marketing strategy with cutting-edge AI tools to design responsive web platforms, interactive games, and automated digital campaigns.",
+    "location": "Available Globally (Remote)",
+    "email": "sakshikashyap6857@gmail.com",
+    "status": "Open to AI Marketing & Web Development Projects",
+    "bioParagraph1": "Hi, I'm Sakshi! I recently completed a specialized certification in Digital Marketing with AI, unlocking new ways to combine modern marketing strategies with rapid artificial intelligence workflows.",
+    "bioParagraph2": "I have a deep passion for building things hands-on using AI tools — from intelligent responsive websites and interactive canvas games to automated video content pipelines. By harnessing AI as a creative amplifier, I turn concepts into live digital products with speed and precision.",
+    "highlights": [
+      {
+        "label": "Specialization",
+        "value": "Digital Marketing with AI",
+        "detail": "Certified in modern AI marketing workflows"
+      },
+      {
+        "label": "Primary Focus",
+        "value": "AI Tools & Rapid Dev",
+        "detail": "Websites, interactive games & AI video"
+      },
+      {
+        "label": "Key Strengths",
+        "value": "Prompting & Optimization",
+        "detail": "ChatGPT, Gemini, Claude, AI Studio"
+      },
+      {
+        "label": "Philosophy",
+        "value": "Build Fast, Iterate Smart",
+        "detail": "AI-assisted coding & creative execution"
+      }
+    ],
+    "stats": [
+      {
+        "number": "5+",
+        "label": "AI Power Tools"
+      },
+      {
+        "number": "100%",
+        "label": "Hands-on AI Driven"
+      },
+      {
+        "number": "2+",
+        "label": "Featured Showcases"
+      },
+      {
+        "number": "24/7",
+        "label": "Curiosity & Passion"
+      }
+    ]
+  },
+  "socials": [
+    {
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/in/sakshi-digital-marketing-ai",
+      "iconName": "Linkedin",
+      "label": "Connect on LinkedIn"
+    },
+    {
+      "platform": "Instagram",
+      "url": "https://instagram.com/sakshi_ai_marketing",
+      "iconName": "Instagram",
+      "label": "Follow on Instagram"
+    },
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/sakshi-ai-dev",
+      "iconName": "Github",
+      "label": "Check Code on GitHub"
+    },
+    {
+      "platform": "Email",
+      "url": "mailto:sakshikashyap6857@gmail.com",
+      "iconName": "Mail",
+      "label": "Email Sakshi"
+    }
+  ],
+  "navItems": [
+    {
+      "id": "hero",
+      "label": "Home",
+      "href": "#hero"
+    },
+    {
+      "id": "about",
+      "label": "About Me",
+      "href": "#about"
+    },
+    {
+      "id": "skills",
+      "label": "Skills & Tools",
+      "href": "#skills"
+    },
+    {
+      "id": "projects",
+      "label": "Projects",
+      "href": "#projects"
+    },
+    {
+      "id": "blog",
+      "label": "Blog",
+      "href": "#blog"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "skillCategories": [
+    {
+      "id": "web-dev",
+      "title": "Website Development",
+      "subtitle": "Building clean, fast, and responsive websites",
+      "icon": "Globe",
+      "accentColor": "purple",
+      "items": [
+        {
+          "name": "Responsive Web Design",
+          "iconName": "Layout",
+          "description": "Creating mobile-first websites tailored for all screen resolutions.",
+          "tags": [
+            "HTML5",
+            "CSS3",
+            "Tailwind CSS"
+          ],
+          "level": "Advanced"
+        },
+        {
+          "name": "AI Coding & Scaffolding",
+          "iconName": "Code",
+          "description": "Using AI models to architect clean semantic HTML, layout systems, and scripts.",
+          "tags": [
+            "Vite",
+            "JavaScript",
+            "AI Studio"
+          ],
+          "level": "Specialist"
+        },
+        {
+          "name": "Landing Page Conversion",
+          "iconName": "Sparkles",
+          "description": "Structuring hero sections, value propositions, and high-converting CTAs.",
+          "tags": [
+            "SEO",
+            "Marketing UX",
+            "A/B Concepts"
+          ],
+          "level": "Pro"
+        },
+        {
+          "name": "UI/UX & Accessibility",
+          "iconName": "Palette",
+          "description": "Readable typography, accessible contrast, smooth transitions, and clean aesthetics.",
+          "tags": [
+            "Modern UI",
+            "Micro-interactions"
+          ],
+          "level": "Skilled"
+        }
+      ]
+    },
+    {
+      "id": "game-dev",
+      "title": "Game Development",
+      "subtitle": "Building fun, interactive games using AI assistance",
+      "icon": "Gamepad2",
+      "accentColor": "teal",
+      "items": [
+        {
+          "name": "Interactive Game Logic",
+          "iconName": "Cpu",
+          "description": "Designing collision systems, scoring, timers, and difficulty scaling.",
+          "tags": [
+            "HTML5 Canvas",
+            "JS Game Loops"
+          ],
+          "level": "Proficient"
+        },
+        {
+          "name": "AI-Assisted Prototyping",
+          "iconName": "Zap",
+          "description": "Prompting LLMs to generate algorithmic gameplay rules and debug game states.",
+          "tags": [
+            "Claude AI",
+            "ChatGPT"
+          ],
+          "level": "Specialist"
+        },
+        {
+          "name": "Story & Level Design",
+          "iconName": "Compass",
+          "description": "Writing engaging narratives, character mechanics, and level progressions.",
+          "tags": [
+            "Game Mechanics",
+            "Storyboards"
+          ],
+          "level": "Creative"
+        },
+        {
+          "name": "Audio & Visual Feedback",
+          "iconName": "Sliders",
+          "description": "Implementing responsive visual particle effects, victory states, and audio cues.",
+          "tags": [
+            "Web Audio",
+            "Canvas FX"
+          ],
+          "level": "Skilled"
+        }
+      ]
+    },
+    {
+      "id": "ai-video",
+      "title": "AI Video Creation",
+      "subtitle": "Making engaging videos using generative AI tools",
+      "icon": "Video",
+      "accentColor": "pink",
+      "items": [
+        {
+          "name": "AI Video Generation",
+          "iconName": "Film",
+          "description": "Crafting video scenes and dynamic visual animations using generative text-to-video AI.",
+          "tags": [
+            "Prompt to Video",
+            "Generative Media"
+          ],
+          "level": "Specialist"
+        },
+        {
+          "name": "AI Scripting & Voiceover",
+          "iconName": "Mic",
+          "description": "Drafting high-retention video scripts and generating natural synthetic voice narration.",
+          "tags": [
+            "Script Writing",
+            "ElevenLabs / TTS"
+          ],
+          "level": "Advanced"
+        },
+        {
+          "name": "Short-Form Video Strategy",
+          "iconName": "Flame",
+          "description": "Optimizing hooks and visuals for Instagram Reels, YouTube Shorts, and TikTok.",
+          "tags": [
+            "Reels",
+            "TikToks",
+            "Pacing"
+          ],
+          "level": "Marketing"
+        },
+        {
+          "name": "Editing & Visual Effects",
+          "iconName": "Scissors",
+          "description": "Assembling generative clips with captions, background tracks, and brand overlays.",
+          "tags": [
+            "Captions",
+            "Motion Cuts"
+          ],
+          "level": "Proficient"
+        }
+      ]
+    },
+    {
+      "id": "ai-tools",
+      "title": "AI Tools I Use",
+      "subtitle": "My everyday artificial intelligence arsenal",
+      "icon": "Bot",
+      "accentColor": "blue",
+      "items": [
+        {
+          "name": "ChatGPT",
+          "iconName": "MessageSquare",
+          "description": "Advanced prompt engineering for marketing copy, SEO content, and fast script ideation.",
+          "badge": "OpenAI",
+          "tags": [
+            "Content Strategy",
+            "Copywriting",
+            "Logic"
+          ],
+          "level": "Daily Driver"
+        },
+        {
+          "name": "Gemini",
+          "iconName": "Sparkles",
+          "description": "Multimodal analysis, deep search synthesis, and creative ideation across text and media.",
+          "badge": "Google",
+          "tags": [
+            "Multimodal",
+            "Research",
+            "Marketing Insights"
+          ],
+          "level": "Power User"
+        },
+        {
+          "name": "Claude AI",
+          "iconName": "Brain",
+          "description": "Complex reasoning, long-form technical architecture, and clean code generation.",
+          "badge": "Anthropic",
+          "tags": [
+            "Code Synthesis",
+            "Nuanced Writing"
+          ],
+          "level": "Expert"
+        },
+        {
+          "name": "Google AI Studio",
+          "iconName": "Boxes",
+          "description": "Rapid developer prototyping, system prompt testing, and API experimentation.",
+          "badge": "Google",
+          "tags": [
+            "Prompt Engineering",
+            "Prototyping",
+            "Vite/React"
+          ],
+          "level": "Specialist"
+        },
+        {
+          "name": "Google AI Flow",
+          "iconName": "Workflow",
+          "description": "Orchestrating interconnected AI pipelines, agentic workflows, and marketing automations.",
+          "badge": "Automation",
+          "tags": [
+            "Workflows",
+            "Pipeline Automation"
+          ],
+          "level": "Innovator"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "school-website",
+      "title": "School Website",
+      "badge": "AI-Powered Education Portal",
+      "tagline": "Modern, fully responsive educational institution website built with AI coding assistants",
+      "description": "An AI-powered school web portal built using AI coding tools. Features a dynamic course catalog, faculty directory, student event notices, and mobile-friendly admissions portal.",
+      "longDescription": "Designed and coded utilizing AI prompt engineering workflows to rapidly scaffold semantic HTML5, modern Tailwind CSS styling, and responsive navigation. Includes interactive tabs for academic departments, interactive fee calculator, upcoming event calendar, and contact forms.",
+      "techStack": [
+        "HTML5/CSS3",
+        "JavaScript",
+        "Google AI Studio",
+        "ChatGPT",
+        "Responsive UI"
+      ],
+      "features": [
+        "Interactive department and course browser",
+        "Event announcements and campus calendar",
+        "Admissions inquiry form with client validation",
+        "High-speed mobile layout with accessibility standards"
+      ],
+      "category": "Website Development",
+      "githubUrl": "https://github.com/sakshi-ai-dev/ai-school-website-portal",
+      "liveUrl": "https://school-website-ai-demo.example.com",
+      "thumbnailGradient": "from-violet-900/60 via-indigo-900/40 to-slate-900/80",
+      "previewType": "school",
+      "imageUrl": ""
+    },
+    {
+      "id": "ai-built-game",
+      "title": "AI-Built Game",
+      "badge": "Interactive AI-Assisted Game",
+      "tagline": "Fast-paced retro arcade web game programmed using AI prompt engineering",
+      "description": "A responsive arcade browser game built with the assistance of AI tools. Features dynamic collision detection, score streaks, responsive keyboard/touch controls, and audio effects.",
+      "longDescription": "Developed by collaborating with Claude AI and Gemini to generate clean HTML5 Canvas render loops, particle explosions, speed ramps, and high score tracking. Includes both keyboard (Arrow keys/WASD) and touch controls for seamless mobile playability.",
+      "techStack": [
+        "HTML5 Canvas",
+        "JavaScript",
+        "Claude AI",
+        "Gemini",
+        "Web Audio API"
+      ],
+      "features": [
+        "Dynamic physics and collision mechanics",
+        "Interactive in-browser playable mini-game demo",
+        "Mobile touch controls + desktop keyboard support",
+        "Real-time score multiplier and sound synth effects"
+      ],
+      "category": "Game Development",
+      "githubUrl": "https://github.com/sakshi-ai-dev/ai-canvas-arcade-game",
+      "liveUrl": "https://ai-arcade-game-demo.example.com",
+      "thumbnailGradient": "from-cyan-900/60 via-teal-900/40 to-slate-900/80",
+      "previewType": "game",
+      "imageUrl": ""
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-301",
+      "title": "Top 10 Generative AI Breakthroughs Transforming Web Development",
+      "author": "Sakshi Kashyap",
+      "category": "AI",
+      "excerpt": "Explore how modern LLMs and agent frameworks are accelerating full-stack coding workflows in 2026.",
+      "content": "Generative AI is not replacing engineers; it is supercharging how developers write, debug, and ship production applications. From autonomous code review to intelligent schema migrations, the modern stack is rapidly evolving.",
+      "imageUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-21T09:15:00.000Z"
+    },
+    {
+      "id": "post-302",
+      "title": "Mastering Modern SEO & Content Strategies for EdTech in 2026",
+      "author": "Marcus Vance",
+      "category": "Digital Marketing",
+      "excerpt": "A deep dive into search intent, technical web performance, and brand building for educational platforms.",
+      "content": "Digital marketing for online academies requires blending high-authority content, frictionless user experience, and search discoverability. Here is the blueprint our marketing team uses to grow organically.",
+      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-22T14:40:00.000Z"
+    },
+    {
+      "id": "post-303",
+      "title": "Prompt Engineering Workflows That Save Me Hours Every Week",
+      "author": "Sakshi Kashyap",
+      "category": "Announcements",
+      "excerpt": "We are expanding our course catalog with new hands-on labs for Kubernetes, Docker, and CI/CD pipelines.",
+      "content": "Starting next month, all enrolled engineering students will gain access to cloud sandbox environments with automated grading and instant feedback.",
+      "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-23T11:00:00.000Z"
+    },
+    {
+      "id": "post-304",
+      "title": "5 Productivity Habits of Senior Full Stack Developers",
+      "author": "Elena Rostova",
+      "category": "Tips",
+      "excerpt": "Practical techniques to avoid burnout, write maintainable code, and master async problem solving.",
+      "content": "Draft notes covering time blocking, keyboard shortcuts, test-driven iteration, and effective documentation strategies.",
+      "imageUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+      "status": "Draft",
+      "createdAt": "2026-03-24T16:20:00.000Z"
+    }
+  ],
+  "messages": []
+}

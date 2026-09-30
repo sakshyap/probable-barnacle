@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Portfolio Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/portfolio-admin.css" />
+</head>
+<body class="pf-body">
+  <div id="pf-loading" class="pf-loading">
+    <div class="pf-spinner"></div>
+    <p>Verifying your session...</p>
+  </div>
+
+  <div id="pf-shell" class="pf-shell" hidden>
+    <!-- Sidebar -->
+    <aside class="pf-sidebar">
+      <div class="pf-sidebar-brand">
+        <div class="pf-sidebar-mark">&#9881;</div>
+        <div>
+          <strong>Portfolio Admin</strong>
+          <span id="pf-admin-email">-</span>
+        </div>
+      </div>
+
+      <nav class="pf-nav-grid" id="pf-nav">
+        <button class="pf-nav-btn active" data-view="overview">
+          <span class="pf-nav-icon">&#128202;</span> Overview
+        </button>
+        <button class="pf-nav-btn" data-view="profile">
+          <span class="pf-nav-icon">&#128100;</span> Profile
+        </button>
+        <button class="pf-nav-btn" data-view="projects">
+          <span class="pf-nav-icon">&#128193;</span> Projects
+        </button>
+        <button class="pf-nav-btn" data-view="skills">
+          <span class="pf-nav-icon">&#9889;</span> Skills
+        </button>
+        <button class="pf-nav-btn" data-view="blog">
+          <span class="pf-nav-icon">&#128221;</span> Blog
+        </button>
+        <button class="pf-nav-btn" data-view="messages">
+          <span class="pf-nav-icon">&#9993;</span>
+          <span>Inbox</span>
+          <span class="pf-nav-badge" id="pf-unread-badge" hidden>0</span>
+        </button>
+        <button class="pf-nav-btn" data-view="links">
+          <span class="pf-nav-icon">&#128279;</span> Socials &amp; Menu
+        </button>
+        <button class="pf-nav-btn" data-view="settings">
+          <span class="pf-nav-icon">&#9881;</span> Settings
+        </button>
+      </nav>
+
+      <div class="pf-sidebar-foot">
+        <a href="/" target="_blank" rel="noreferrer">
+          <span class="pf-nav-icon">&#128279;</span> View live site
+        </a>
+        <button type="button" id="pf-logout">
+          <span class="pf-nav-icon">&#9099;</span> Sign out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="pf-main">
+      <!-- OVERVIEW -->
+      <section class="pf-view active" data-view="overview">
+        <div class="pf-page-head">
+          <div>
+            <h1>Overview</h1>
+            <p>A snapshot of everything published on your portfolio.</p>
+          </div>
+          <button class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-refresh-all">Refresh</button>
+        </div>
+
+        <div class="pf-stat-grid" id="pf-stats"></div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <div>
+              <h2>Getting started</h2>
+              <p>Edits save to <code class="pf-mono">data/portfolio-db.json</code> and appear on the site immediately.</p>
+            </div>
+          </div>
+          <ol class="pf-muted" style="font-size: 0.85rem; line-height: 1.9; margin: 0; padding-left: 20px;">
+            <li>Update your <strong>Profile</strong> - name, headline, bio and stats.</li>
+            <li>Add or edit <strong>Projects</strong> with links and tech stacks.</li>
+            <li>Curate <strong>Skills</strong> categories and the tools you use.</li>
+            <li>Write <strong>Blog</strong> posts - drafts stay hidden until published.</li>
+            <li>Check the <strong>Inbox</strong> for messages sent from the contact form.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="pf-view" data-view="profile">
+        <div class="pf-page-head">
+          <div>
+            <h1>Profile</h1>
+            <p>This content fills the hero banner and the About section.</p>
+          </div>
+        </div>
+
+        <form id="pf-profile-form">
+          <div class="pf-card">
+            <div class="pf-card-head">
+              <div>
+                <h2>Basics</h2>
+                <p>Name, headline and the copy shown at the top of the site.</p>
+              </div>
+            </div>
+
+            <div class="pf-row pf-row-2">
+              <div class="pf-field">
+                <label for="pf-p-name">Display name</label>
+                <input id="pf-p-name" name="name" class="pf-input" required />
+              </div>
+              <div class="pf-field">
+                <label for="pf-p-title">Professional title</label>
+                <input id="pf-p-title" name="title" class="pf-input" placeholder="Digital Marketing with AI Specialist" />
+              </div>
+            </div>
+
+            <div class="pf-field">
+              <label for="pf-p-shortIntro">Short intro</label>
+              <textarea id="pf-p-shortIntro" name="shortIntro" class="pf-textarea" style="min-height: 78px;"></textarea>
+              <p class="pf-hint">One or two sentences shown under your name in the hero.</p>
+            </div>
+
+            <div class="pf-row pf-row-2">
+              <div class="pf-field">
+                <label for="pf-p-location">Location / availability</label>
+                <input id="pf-p-location" name="location" class="pf-input" placeholder="Available Globally (Remote)" />
+              </div>
+              <div class="pf-field">
+                <label for="pf-p-status">Status line</label>
+                <input id="pf-p-status" name="status" class="pf-input" placeholder="Open to AI Marketing Projects" />
+              </div>
+            </div>
+
+            <div class="pf-field">
+              <label for="pf-p-email">Public email</label>
+              <input id="pf-p-email" name="email" type="email" class="pf-input" />
+              <p class="pf-hint">Shown on the contact card. This is not your login email.</p>
+            </div>
+          </div>
+
+          <div class="pf-card">
+            <div class="pf-card-head">
+              <div>
+                <h2>About section</h2>
+                <p>The two paragraphs rendered in the About block.</p>
+              </div>
+            </div>
+
+            <div class="pf-field">
+              <label for="pf-p-bio1">Paragraph one</label>
+              <textarea id="pf-p-bio1" name="bioParagraph1" class="pf-textarea"></textarea>
+            </div>
+
+            <div class="pf-field">
+              <label for="pf-p-bio2">Paragraph two</label>
+              <textarea id="pf-p-bio2" name="bioParagraph2" class="pf-textarea"></textarea>
+            </div>
+          </div>
+
+          <div class="pf-card">
+            <div class="pf-card-head">
+              <div>
+                <h2>Highlights</h2>
+                <p>The four highlight cards under your intro.</p>
+              </div>
+              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-add-highlight">+ Add highlight</button>
+            </div>
+            <div id="pf-highlights"></div>
+          </div>
+
+          <div class="pf-card">
+            <div class="pf-card-head">
+              <div>
+                <h2>Stats</h2>
+                <p>The number/label tiles in the hero band.</p>
+              </div>
+              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-add-stat">+ Add stat</button>
+            </div>
+            <div id="pf-stats-editor"></div>
+          </div>
+
+          <button type="submit" class="pf-btn pf-btn-primary" id="pf-profile-save">Save profile</button>
+        </form>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="pf-view" data-view="projects">
+        <div class="pf-page-head">
+          <div>
+            <h1>Projects</h1>
+            <p>Case studies shown in the Projects section of your site.</p>
+          </div>
+          <button class="pf-btn pf-btn-primary pf-btn-sm" id="pf-add-project">+ New project</button>
+        </div>
+        <div class="pf-table-wrap">
+          <table class="pf-table">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Category</th>
+                <th>Links</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pf-projects-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="pf-view" data-view="skills">
+        <div class="pf-page-head">
+          <div>
+            <h1>Skills</h1>
+            <p>Categories of skills and the AI tools you work with.</p>
+          </div>
+          <button class="pf-btn pf-btn-primary pf-btn-sm" id="pf-add-skill-category">+ New category</button>
+        </div>
+        <div id="pf-skills-list"></div>
+      </section>
+
+      <!-- BLOG -->
+      <section class="pf-view" data-view="blog">
+        <div class="pf-page-head">
+          <div>
+            <h1>Blog</h1>
+            <p>Drafts are hidden from visitors until you publish them.</p>
+          </div>
+          <button class="pf-btn pf-btn-primary pf-btn-sm" id="pf-add-post">+ New post</button>
+        </div>
+        <div class="pf-table-wrap">
+          <table class="pf-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pf-posts-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section class="pf-view" data-view="messages">
+        <div class="pf-page-head">
+          <div>
+            <h1>Inbox</h1>
+            <p>Messages sent through the contact form on your portfolio.</p>
+          </div>
+          <button class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-refresh-messages">Refresh</button>
+        </div>
+        <div id="pf-messages-list"></div>
+      </section>
+
+      <!-- SOCIALS & MENU -->
+      <section class="pf-view" data-view="links">
+        <div class="pf-page-head">
+          <div>
+            <h1>Socials &amp; Menu</h1>
+            <p>Profile links used across the navbar, footer and contact card.</p>
+          </div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <div>
+              <h2>Social profiles</h2>
+              <p>Shown as buttons in the contact section and footer.</p>
+            </div>
+            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-add-social">+ Add profile</button>
+          </div>
+          <div class="pf-table-wrap">
+            <table class="pf-table">
+              <thead>
+                <tr>
+                  <th>Platform</th>
+                  <th>URL</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pf-socials-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pf-card">
+          <div class="pf-card-head">
+            <div>
+              <h2>Navbar menu</h2>
+              <p>The section links across the top of the site.</p>
+            </div>
+            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pf-add-nav">+ Add menu item</button>
+          </div>
+          <div class="pf-table-wrap">
+            <table class="pf-table">
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>Anchor</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pf-nav-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="pf-view" data-view="settings">
+        <div class="pf-page-head">
+          <div>
+            <h1>Settings</h1>
+            <p>Change the password used to sign in to this panel.</p>
+          </div>
+        </div>
+
+        <form id="pf-password-form" class="pf-card" style="max-width: 460px;">
+          <div class="pf-card-head">
+            <div>
+              <h2>Change password</h2>
+              <p>Use at least 8 characters. You will stay signed in on this device.</p>
+            </div>
+          </div>
+
+          <div class="pf-field">
+            <label for="pf-cur-pw">Current password</label>
+            <input id="pf-cur-pw" type="password" class="pf-input" autocomplete="current-password" required />
+          </div>
+
+          <div class="pf-field">
+            <label for="pf-new-pw">New password</label>
+            <input id="pf-new-pw" type="password" class="pf-input" autocomplete="new-password" minlength="8" required />
+          </div>
+
+          <div class="pf-field">
+            <label for="pf-confirm-pw">Confirm new password</label>
+            <input id="pf-confirm-pw" type="password" class="pf-input" autocomplete="new-password" minlength="8" required />
+          </div>
+
+          <button type="submit" class="pf-btn pf-btn-primary" id="pf-pw-save">Update password</button>
+        </form>
+
+        <div class="pf-card" style="max-width: 460px;">
+          <div class="pf-card-head">
+            <div>
+              <h2>Where your data lives</h2>
+              <p>Everything is stored in a single JSON file, so you can back it up by copying one file.</p>
+            </div>
+          </div>
+          <p class="pf-muted" style="font-size: 0.85rem; margin: 0;">
+            <code class="pf-mono">data/portfolio-db.json</code>
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Shared modal for project / post / category / social / nav editing -->
+  <div class="pf-modal-backdrop" id="pf-modal">
+    <div class="pf-modal" role="dialog" aria-modal="true" aria-labelledby="pf-modal-title">
+      <div class="pf-modal-head">
+        <h2 id="pf-modal-title">Edit</h2>
+        <button class="pf-icon-btn" id="pf-modal-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <form id="pf-modal-form">
+        <div class="pf-modal-body" id="pf-modal-body"></div>
+        <div class="pf-modal-foot">
+          <button type="button" class="pf-btn pf-btn-ghost" id="pf-modal-cancel">Cancel</button>
+          <button type="submit" class="pf-btn pf-btn-primary" id="pf-modal-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/js/portfolio-dashboard.js"></script>
+</body>
+</html>

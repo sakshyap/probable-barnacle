@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Portfolio Admin - Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/portfolio-admin.css" />
+</head>
+<body class="pf-body">
+  <main class="pf-login-wrap">
+    <div class="pf-login-card">
+      <div class="pf-login-brand">
+        <div class="pf-login-mark">&#9881;</div>
+        <h1>Portfolio Admin</h1>
+        <p>Sign in to manage your portfolio content</p>
+      </div>
+
+      <div id="login-alert" class="pf-alert pf-alert-error" role="alert">
+        <span aria-hidden="true">&#9888;</span>
+        <span id="login-alert-text">Invalid email or password.</span>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="pf-field">
+          <label for="pf-email">Email address</label>
+          <input
+            type="email"
+            id="pf-email"
+            name="email"
+            class="pf-input"
+            placeholder="you@example.com"
+            autocomplete="username"
+            required
+            autofocus
+          />
+        </div>
+
+        <div class="pf-field">
+          <label for="pf-password">Password</label>
+          <input
+            type="password"
+            id="pf-password"
+            name="password"
+            class="pf-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <div class="pf-field">
+          <label
+            for="pf-show-password"
+            style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 0.82rem; font-weight: 600; color: var(--muted);"
+          >
+            <input type="checkbox" id="pf-show-password" style="accent-color: #8b5cf6; width: 15px; height: 15px;" />
+            <span>Show password</span>
+          </label>
+        </div>
+
+        <button type="submit" id="pf-login-btn" class="pf-btn pf-btn-primary pf-btn-block">
+          <span id="pf-btn-label">Sign in</span>
+        </button>
+      </form>
+
+      <a class="pf-back-link" href="/">&larr; Back to portfolio</a>
+    </div>
+  </main>
+
+  <script type="module" src="/js/portfolio-login.js"></script>
+</body>
+</html>

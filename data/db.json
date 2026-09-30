@@ -1,0 +1,130 @@
+{
+  "admin": {
+    "id": "admin-1",
+    "email": "admin@example.com",
+    "name": "System Administrator",
+    "passwordHash": "$2b$12$4byAx8gqtrtP35QUCzASfO75ICWglCG6vr865vUXYpEgkz6XOK2hW",
+    "role": "admin",
+    "updatedAt": "2026-09-30T06:17:45.637Z"
+  },
+  "students": [
+    {
+      "id": "std-101",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@example.com",
+      "enrolledCourse": "Full Stack Web Development",
+      "createdAt": "2026-03-10T09:30:00.000Z"
+    },
+    {
+      "id": "std-102",
+      "name": "Priya Patel",
+      "email": "priya.patel@example.com",
+      "enrolledCourse": "UI/UX Product Design",
+      "createdAt": "2026-03-12T11:15:00.000Z"
+    },
+    {
+      "id": "std-103",
+      "name": "Rohan Mehta",
+      "email": "rohan.mehta@example.com",
+      "enrolledCourse": "Data Science & AI Analytics",
+      "createdAt": "2026-03-14T14:20:00.000Z"
+    },
+    {
+      "id": "std-104",
+      "name": "Ananya Verma",
+      "email": "ananya.verma@example.com",
+      "enrolledCourse": "Full Stack Web Development",
+      "createdAt": "2026-03-18T10:05:00.000Z"
+    },
+    {
+      "id": "std-105",
+      "name": "Devansh Singh",
+      "email": "devansh.s@example.com",
+      "enrolledCourse": "Cloud DevOps & Kubernetes",
+      "createdAt": "2026-03-20T16:45:00.000Z"
+    }
+  ],
+  "courses": [
+    {
+      "id": "crs-201",
+      "title": "Full Stack Web Development",
+      "seats": 35,
+      "active": true,
+      "createdAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "crs-202",
+      "title": "UI/UX Product Design",
+      "seats": 25,
+      "active": true,
+      "createdAt": "2026-01-20T08:00:00.000Z"
+    },
+    {
+      "id": "crs-203",
+      "title": "Data Science & AI Analytics",
+      "seats": 20,
+      "active": true,
+      "createdAt": "2026-02-01T08:00:00.000Z"
+    },
+    {
+      "id": "crs-204",
+      "title": "Cloud DevOps & Kubernetes",
+      "seats": 15,
+      "active": true,
+      "createdAt": "2026-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "crs-205",
+      "title": "Mobile App Engineering (Flutter)",
+      "seats": 20,
+      "active": false,
+      "createdAt": "2026-02-15T08:00:00.000Z"
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-301",
+      "title": "Top 10 Generative AI Breakthroughs Transforming Web Development",
+      "author": "Dr. Sarah Jenkins",
+      "category": "AI",
+      "excerpt": "Explore how modern LLMs and agent frameworks are accelerating full-stack coding workflows in 2026.",
+      "content": "Generative AI is not replacing engineers; it is supercharging how developers write, debug, and ship production applications. From autonomous code review to intelligent schema migrations, the modern stack is rapidly evolving.",
+      "imageUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-21T09:15:00.000Z"
+    },
+    {
+      "id": "post-302",
+      "title": "Mastering Modern SEO & Content Strategies for EdTech in 2026",
+      "author": "Marcus Vance",
+      "category": "Digital Marketing",
+      "excerpt": "A deep dive into search intent, technical web performance, and brand building for educational platforms.",
+      "content": "Digital marketing for online academies requires blending high-authority content, frictionless user experience, and search discoverability. Here is the blueprint our marketing team uses to grow organically.",
+      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-22T14:40:00.000Z"
+    },
+    {
+      "id": "post-303",
+      "title": "Spring 2026 Curriculum Update: Cloud DevOps & Microservices",
+      "author": "System Administrator",
+      "category": "Announcements",
+      "excerpt": "We are expanding our course catalog with new hands-on labs for Kubernetes, Docker, and CI/CD pipelines.",
+      "content": "Starting next month, all enrolled engineering students will gain access to cloud sandbox environments with automated grading and instant feedback.",
+      "imageUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+      "status": "Published",
+      "createdAt": "2026-03-23T11:00:00.000Z"
+    },
+    {
+      "id": "post-304",
+      "title": "5 Productivity Habits of Senior Full Stack Developers",
+      "author": "Elena Rostova",
+      "category": "Tips",
+      "excerpt": "Practical techniques to avoid burnout, write maintainable code, and master async problem solving.",
+      "content": "Draft notes covering time blocking, keyboard shortcuts, test-driven iteration, and effective documentation strategies.",
+      "imageUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+      "status": "Draft",
+      "createdAt": "2026-03-24T16:20:00.000Z"
+    }
+  ]
+}
