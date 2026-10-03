@@ -1,8 +1,60 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
+# environment variables (highest priority - never commit secrets)
+.env
+.env.*
 !.env.example
+
+# dependencies
+node_modules
+
+# compiled output
+build/
+dist
+out-tsc
+*.tsbuildinfo
+tmp
+.expo
+.expo-shared
+
+# coverage
+coverage/
+/libpeerconnection.log
+
+# logs
+*.log
+npm-debug.log
+yarn-error.log
+testem.log
+
+# large archives and junk
+mywebsite.zip
+zip
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - Cursor
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+# Replit
+.cache/
+.local/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+/typings
