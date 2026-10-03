@@ -6,6 +6,9 @@
 # dependencies
 node_modules
 
+# Vercel CLI local state
+.vercel
+
 # compiled output
 build/
 dist
