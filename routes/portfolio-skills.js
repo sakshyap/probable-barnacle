@@ -7,6 +7,7 @@ import {
   reorderSkillCategories
 } from '../data/portfolio-db.js';
 import { verifyPortfolioToken } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -42,60 +43,81 @@ function validate(payload, { partial = false } = {}) {
 /**
  * GET /api/portfolio/skills
  */
-router.get('/', (req, res) => {
-  res.status(200).json({ success: true, count: getSkillCategories().length, data: getSkillCategories() });
+router.get('/', async (req, res) => {
+  try {
+    const categories = await getSkillCategories();
+    res.status(200).json({ success: true, count: categories.length, data: categories });
+  } catch (err) {
+    sendError(res, err, 'Failed to retrieve skill categories.');
+  }
 });
 
 /**
  * POST /api/portfolio/skills
  */
-router.post('/', verifyPortfolioToken, (req, res) => {
+router.post('/', verifyPortfolioToken, async (req, res) => {
   const error = validate(req.body || {});
   if (error) return res.status(400).json({ success: false, error });
 
-  res.status(201).json({
-    success: true,
-    message: 'Skill category created',
-    data: createSkillCategory(req.body)
-  });
+  try {
+    res.status(201).json({
+      success: true,
+      message: 'Skill category created',
+      data: await createSkillCategory(req.body)
+    });
+  } catch (err) {
+    sendError(res, err, 'Failed to create the skill category.');
+  }
 });
 
 /**
  * PUT /api/portfolio/skills/reorder
  * Body: { ids: ["web-dev", "game-dev"] }
  */
-router.put('/reorder', verifyPortfolioToken, (req, res) => {
+router.put('/reorder', verifyPortfolioToken, async (req, res) => {
   const ids = req.body?.ids;
   if (!Array.isArray(ids)) {
     return res.status(400).json({ success: false, error: 'Body must contain an "ids" array.' });
   }
-  res.status(200).json({ success: true, message: 'Skill order saved', data: reorderSkillCategories(ids) });
+  try {
+    res.status(200).json({ success: true, message: 'Skill order saved', data: await reorderSkillCategories(ids) });
+  } catch (err) {
+    sendError(res, err, 'Failed to save the skill order.');
+  }
 });
 
 /**
  * PUT /api/portfolio/skills/:id
  */
-router.put('/:id', verifyPortfolioToken, (req, res) => {
+router.put('/:id', verifyPortfolioToken, async (req, res) => {
   const error = validate(req.body || {}, { partial: true });
   if (error) return res.status(400).json({ success: false, error });
 
-  const updated = updateSkillCategory(req.params.id, req.body || {});
-  if (!updated) {
-    return res.status(404).json({ success: false, error: `No skill category with id "${req.params.id}".` });
-  }
+  try {
+    const updated = await updateSkillCategory(req.params.id, req.body || {});
+    if (!updated) {
+      return res.status(404).json({ success: false, error: `No skill category with id "${req.params.id}".` });
+    }
 
-  res.status(200).json({ success: true, message: 'Skill category updated', data: updated });
+    res.status(200).json({ success: true, message: 'Skill category updated', data: updated });
+  } catch (err) {
+    sendError(res, err, 'Failed to update the skill category.');
+  }
 });
 
 /**
  * DELETE /api/portfolio/skills/:id
  */
-router.delete('/:id', verifyPortfolioToken, (req, res) => {
-  const removed = removeSkillCategory(req.params.id);
-  if (!removed) {
-    return res.status(404).json({ success: false, error: `No skill category with id "${req.params.id}".` });
+router.delete('/:id', verifyPortfolioToken, async (req, res) => {
+  try {
+    const removed = await removeSkillCategory(req.params.id);
+    if (!removed) {
+      return res.status(404).json({ success: false, error: `No skill category with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, message: 'Skill category deleted' });
+  } catch (err) {
+    sendError(res, err, 'Failed to delete the skill category.');
   }
-  res.status(200).json({ success: true, message: 'Skill category deleted' });
 });
 
 export default router;

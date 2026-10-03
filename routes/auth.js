@@ -1,20 +1,24 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { getAdminUser } from '../data/db.js';
+import { getSupabaseAnon } from '../data/supabase.js';
+import { issueSession, clearSession, toSessionUser } from '../middleware/supabase-session.js';
 import { verifyToken } from '../middleware/auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
+const NAMESPACE = 'admin';
+
 /**
  * POST /api/auth/login
- * Validates admin credentials and returns an 8-hour JWT token
+ * Body: { email, password }
+ *
+ * Signs in through Supabase Auth and returns the access token, which the
+ * admin panel stores in localStorage and sends back as a Bearer header.
  */
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
-    // Validate input fields
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -22,87 +26,48 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    const admin = getAdminUser();
-    if (!admin) {
-      return res.status(500).json({
-        success: false,
-        error: 'Admin configuration not found in database.'
-      });
-    }
+    const { data, error } = await getSupabaseAnon().auth.signInWithPassword({
+      email: String(email).trim().toLowerCase(),
+      password: String(password)
+    });
 
-    // Verify email (case-insensitive)
-    if (admin.email.toLowerCase() !== email.trim().toLowerCase()) {
+    if (error || !data?.session) {
       return res.status(401).json({
         success: false,
         error: 'Invalid email or password.'
       });
     }
 
-    // Verify password with bcryptjs
-    let isMatch = await bcrypt.compare(password, admin.passwordHash);
-    if (!isMatch && typeof password === 'string' && password.trim() !== password) {
-      isMatch = await bcrypt.compare(password.trim(), admin.passwordHash);
-    }
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        error: 'Invalid email or password.'
-      });
-    }
-
-    // Generate JWT token (8 hours expiration)
-    const secret = process.env.JWT_SECRET || 'supersecret_admin_jwt_key_2026_change_in_production';
-    const token = jwt.sign(
-      {
-        id: admin.id,
-        email: admin.email,
-        name: admin.name,
-        role: admin.role || 'admin'
-      },
-      secret,
-      { expiresIn: '8h' }
-    );
+    issueSession(res, NAMESPACE, {
+      token: data.session.access_token,
+      refreshToken: data.session.refresh_token
+    });
 
     return res.status(200).json({
       success: true,
       message: 'Authentication successful',
-      token,
-      user: {
-        id: admin.id,
-        email: admin.email,
-        name: admin.name,
-        role: admin.role || 'admin'
-      }
+      token: data.session.access_token,
+      refreshToken: data.session.refresh_token,
+      user: toSessionUser(data.user)
     });
   } catch (err) {
-    console.error('Login error:', err);
-    return res.status(500).json({
-      success: false,
-      error: 'An internal server error occurred while processing login.'
-    });
+    return sendError(res, err, 'An internal server error occurred while processing login.');
   }
 });
 
 /**
  * GET /api/auth/me
- * Returns the currently authenticated admin's profile
  */
 router.get('/me', verifyToken, (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: req.user
-  });
+  res.status(200).json({ success: true, user: req.user });
 });
 
 /**
  * POST /api/auth/logout
- * Sign out confirmation endpoint
  */
 router.post('/logout', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Logged out successfully'
-  });
+  clearSession(res, NAMESPACE);
+  res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
 export default router;

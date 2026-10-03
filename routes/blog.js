@@ -7,6 +7,7 @@ import {
   removePost
 } from '../data/db.js';
 import { verifyToken } from '../middleware/auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -14,17 +15,16 @@ const router = express.Router();
  * GET /api/blog
  * Returns the list of all blog posts (Publicly readable for portfolio)
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const posts = getAllPosts();
+    const posts = await getAllPosts();
     res.status(200).json({
       success: true,
       count: posts.length,
       data: posts
     });
   } catch (err) {
-    console.error('Error fetching blog posts:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve blog posts.' });
+    sendError(res, err, 'Failed to retrieve blog posts.');
   }
 });
 
@@ -32,10 +32,10 @@ router.get('/', (req, res) => {
  * GET /api/blog/:id
  * Returns a single blog post by ID (Publicly readable)
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const post = getPostById(id);
+    const post = await getPostById(id);
 
     if (!post) {
       return res.status(404).json({
@@ -49,8 +49,7 @@ router.get('/:id', (req, res) => {
       data: post
     });
   } catch (err) {
-    console.error('Error fetching blog post:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve blog post.' });
+    sendError(res, err, 'Failed to retrieve blog post.');
   }
 });
 
@@ -59,7 +58,7 @@ router.get('/:id', (req, res) => {
  * Creates a new blog post (Protected by JWT)
  * Body: { title, author, category, excerpt, content, imageUrl, status }
  */
-router.post('/', verifyToken, (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   try {
     const { title, author, category, excerpt, content, imageUrl, status } = req.body;
 
@@ -79,7 +78,7 @@ router.post('/', verifyToken, (req, res) => {
 
     const validStatus = status === 'Draft' ? 'Draft' : 'Published';
 
-    const newPost = createPost({
+    const newPost = await createPost({
       title: title.trim(),
       author: author.trim(),
       category: category.trim(),
@@ -95,8 +94,7 @@ router.post('/', verifyToken, (req, res) => {
       data: newPost
     });
   } catch (err) {
-    console.error('Error creating blog post:', err);
-    res.status(500).json({ success: false, error: 'Failed to create blog post.' });
+    sendError(res, err, 'Failed to create blog post.');
   }
 });
 
@@ -105,10 +103,10 @@ router.post('/', verifyToken, (req, res) => {
  * Updates an existing blog post (Protected by JWT)
  * Body: { title, author, category, excerpt, content, imageUrl, status }
  */
-router.put('/:id', verifyToken, (req, res) => {
+router.put('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const existing = getPostById(id);
+    const existing = await getPostById(id);
 
     if (!existing) {
       return res.status(404).json({
@@ -132,7 +130,7 @@ router.put('/:id', verifyToken, (req, res) => {
       return res.status(400).json({ success: false, error: 'Post content cannot be empty.' });
     }
 
-    const updatedPost = updatePost(id, {
+    const updatedPost = await updatePost(id, {
       title,
       author,
       category,
@@ -148,8 +146,7 @@ router.put('/:id', verifyToken, (req, res) => {
       data: updatedPost
     });
   } catch (err) {
-    console.error('Error updating blog post:', err);
-    res.status(500).json({ success: false, error: 'Failed to update blog post.' });
+    sendError(res, err, 'Failed to update blog post.');
   }
 });
 
@@ -157,10 +154,10 @@ router.put('/:id', verifyToken, (req, res) => {
  * DELETE /api/blog/:id
  * Deletes a blog post by ID (Protected by JWT)
  */
-router.delete('/:id', verifyToken, (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const removed = removePost(id);
+    const removed = await removePost(id);
 
     if (!removed) {
       return res.status(404).json({
@@ -174,8 +171,7 @@ router.delete('/:id', verifyToken, (req, res) => {
       message: 'Blog post deleted successfully'
     });
   } catch (err) {
-    console.error('Error deleting blog post:', err);
-    res.status(500).json({ success: false, error: 'Failed to delete blog post.' });
+    sendError(res, err, 'Failed to delete blog post.');
   }
 });
 

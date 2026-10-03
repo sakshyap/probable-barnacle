@@ -8,6 +8,7 @@ import {
   reorderProjects
 } from '../data/portfolio-db.js';
 import { verifyPortfolioToken } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -67,34 +68,47 @@ function parseList(value) {
 /**
  * GET /api/portfolio/projects
  */
-router.get('/', (req, res) => {
-  res.status(200).json({ success: true, count: getProjects().length, data: getProjects() });
+router.get('/', async (req, res) => {
+  try {
+    const projects = await getProjects();
+    res.status(200).json({ success: true, count: projects.length, data: projects });
+  } catch (err) {
+    sendError(res, err, 'Failed to retrieve projects.');
+  }
 });
 
 /**
  * GET /api/portfolio/projects/:id
  */
-router.get('/:id', (req, res) => {
-  const project = getProjectById(req.params.id);
-  if (!project) {
-    return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+router.get('/:id', async (req, res) => {
+  try {
+    const project = await getProjectById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, data: project });
+  } catch (err) {
+    sendError(res, err, 'Failed to retrieve the project.');
   }
-  res.status(200).json({ success: true, data: project });
 });
 
 /**
  * POST /api/portfolio/projects
  */
-router.post('/', verifyPortfolioToken, (req, res) => {
+router.post('/', verifyPortfolioToken, async (req, res) => {
   const body = req.body || {};
   const error = validate(body);
   if (error) return res.status(400).json({ success: false, error });
 
-  res.status(201).json({
-    success: true,
-    message: 'Project created successfully',
-    data: createProject({ ...body, techStack: parseList(body.techStack), features: parseList(body.features) })
-  });
+  try {
+    res.status(201).json({
+      success: true,
+      message: 'Project created successfully',
+      data: await createProject({ ...body, techStack: parseList(body.techStack), features: parseList(body.features) })
+    });
+  } catch (err) {
+    sendError(res, err, 'Failed to create the project.');
+  }
 });
 
 /**
@@ -104,46 +118,62 @@ router.post('/', verifyPortfolioToken, (req, res) => {
  * Declared before "/:id" so that the literal "reorder" segment is never
  * captured as a project id.
  */
-router.put('/reorder', verifyPortfolioToken, (req, res) => {
+router.put('/reorder', verifyPortfolioToken, async (req, res) => {
   const ids = req.body?.ids;
   if (!Array.isArray(ids)) {
     return res.status(400).json({ success: false, error: 'Body must contain an "ids" array.' });
   }
-  res.status(200).json({ success: true, message: 'Project order saved', data: reorderProjects(ids) });
+  try {
+    res.status(200).json({ success: true, message: 'Project order saved', data: await reorderProjects(ids) });
+  } catch (err) {
+    sendError(res, err, 'Failed to save the project order.');
+  }
 });
 
 /**
  * PUT /api/portfolio/projects/:id
  */
-router.put('/:id', verifyPortfolioToken, (req, res) => {
+router.put('/:id', verifyPortfolioToken, async (req, res) => {
   const body = req.body || {};
   const error = validate(body, { partial: true });
   if (error) return res.status(400).json({ success: false, error });
 
-  if (!getProjectById(req.params.id)) {
-    return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+  try {
+    if (!(await getProjectById(req.params.id))) {
+      return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+    }
+  } catch (err) {
+    return sendError(res, err, 'Failed to load the project.');
   }
 
   const patch = { ...body };
   if (body.techStack !== undefined) patch.techStack = parseList(body.techStack);
   if (body.features !== undefined) patch.features = parseList(body.features);
 
-  res.status(200).json({
-    success: true,
-    message: 'Project updated successfully',
-    data: updateProject(req.params.id, patch)
-  });
+  try {
+    res.status(200).json({
+      success: true,
+      message: 'Project updated successfully',
+      data: await updateProject(req.params.id, patch)
+    });
+  } catch (err) {
+    sendError(res, err, 'Failed to update the project.');
+  }
 });
 
 /**
  * DELETE /api/portfolio/projects/:id
  */
-router.delete('/:id', verifyPortfolioToken, (req, res) => {
-  const removed = removeProject(req.params.id);
-  if (!removed) {
-    return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+router.delete('/:id', verifyPortfolioToken, async (req, res) => {
+  try {
+    const removed = await removeProject(req.params.id);
+    if (!removed) {
+      return res.status(404).json({ success: false, error: `No project with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, message: 'Project deleted' });
+  } catch (err) {
+    sendError(res, err, 'Failed to delete the project.');
   }
-  res.status(200).json({ success: true, message: 'Project deleted' });
 });
 
 export default router;

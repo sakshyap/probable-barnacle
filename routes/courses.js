@@ -1,6 +1,7 @@
 import express from 'express';
 import { getAllCourses, createCourse, removeCourse } from '../data/db.js';
 import { verifyToken } from '../middleware/auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -8,17 +9,16 @@ const router = express.Router();
  * GET /api/courses
  * Returns all courses (Publicly readable)
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const courses = getAllCourses();
+    const courses = await getAllCourses();
     res.status(200).json({
       success: true,
       count: courses.length,
       data: courses
     });
   } catch (err) {
-    console.error('Error fetching courses:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve courses list.' });
+    sendError(res, err, 'Failed to retrieve courses list.');
   }
 });
 
@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
  * Creates a new course (Protected by JWT)
  * Body: { title, seats, active }
  */
-router.post('/', verifyToken, (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   try {
     const { title, seats, active } = req.body;
 
@@ -40,7 +40,7 @@ router.post('/', verifyToken, (req, res) => {
       return res.status(400).json({ success: false, error: 'Seats must be a positive integer greater than 0.' });
     }
 
-    const newCourse = createCourse({
+    const newCourse = await createCourse({
       title,
       seats: seatsNumber,
       active: active === true || active === 'true' || active === 'on'
@@ -52,8 +52,7 @@ router.post('/', verifyToken, (req, res) => {
       data: newCourse
     });
   } catch (err) {
-    console.error('Error adding course:', err);
-    res.status(500).json({ success: false, error: 'Failed to create course.' });
+    sendError(res, err, 'Failed to create course.');
   }
 });
 
@@ -61,10 +60,10 @@ router.post('/', verifyToken, (req, res) => {
  * DELETE /api/courses/:id
  * Removes a course by ID (Protected by JWT)
  */
-router.delete('/:id', verifyToken, (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const removed = removeCourse(id);
+    const removed = await removeCourse(id);
 
     if (!removed) {
       return res.status(404).json({
@@ -78,8 +77,7 @@ router.delete('/:id', verifyToken, (req, res) => {
       message: 'Course removed successfully'
     });
   } catch (err) {
-    console.error('Error deleting course:', err);
-    res.status(500).json({ success: false, error: 'Failed to delete course.' });
+    sendError(res, err, 'Failed to delete course.');
   }
 });
 

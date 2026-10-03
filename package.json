@@ -7,11 +7,18 @@
     "start": "node server.js",
     "dev": "node server.js",
     "build": "vite build",
-    "seed": "node scripts/hashPassword.js",
-    "lint": "node --check server.js"
+    "preview": "vite preview",
+    "seed": "node scripts/seedAdmin.js",
+    "migrate": "node scripts/migrateJsonToSupabase.js",
+    "check": "node scripts/checkSyntax.js",
+    "lint": "node scripts/checkSyntax.js"
+  },
+  "engines": {
+    "node": ">=22.12"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
+    "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
     "bcryptjs": "^3.0.3",

@@ -1,56 +1,25 @@
-import jwt from 'jsonwebtoken';
+import { resolveSession, toSessionUser } from './supabase-session.js';
 
 /**
- * Middleware to verify JWT authentication token
- * Protects admin API routes and redirects unauthorized page requests to /admin
+ * Protects the legacy students/courses admin API.
+ *
+ * Sessions are Supabase Auth access tokens. Any confirmed Supabase user is
+ * treated as an admin - the project only ever has one operator. See
+ * README.md ("Restricting who can sign in") if you need a tighter rule.
  */
-export function verifyToken(req, res, next) {
-  let token = null;
+export async function verifyToken(req, res, next) {
+  const user = await resolveSession(req, res, 'admin');
 
-  // 1. Check Authorization header (Format: Bearer <token>)
-  const authHeader = req.headers.authorization || req.headers.Authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    token = authHeader.split(' ')[1];
-  }
-
-  // 2. Check token in cookies if present
-  if (!token && req.headers.cookie) {
-    const cookies = req.headers.cookie.split(';').map(c => c.trim());
-    const tokenCookie = cookies.find(c => c.startsWith('admin_token='));
-    if (tokenCookie) {
-      token = tokenCookie.split('=')[1];
-    }
-  }
-
-  // 3. Fallback: check query parameter ?token=
-  if (!token && req.query.token) {
-    token = req.query.token;
-  }
-
-  // If no token is provided
-  if (!token) {
+  if (!user) {
     if (req.originalUrl.startsWith('/api/')) {
       return res.status(401).json({
         success: false,
-        error: 'Unauthorized: Access denied. Please provide a valid Bearer token.'
+        error: 'Unauthorized: Access denied. Please sign in again.'
       });
     }
     return res.redirect('/admin');
   }
 
-  // Verify token
-  try {
-    const secret = process.env.JWT_SECRET || 'supersecret_admin_jwt_key_2026_change_in_production';
-    const decoded = jwt.verify(token, secret);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    if (req.originalUrl.startsWith('/api/')) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized: Invalid or expired token. Please log in again.'
-      });
-    }
-    return res.redirect('/admin');
-  }
+  req.user = toSessionUser(user);
+  return next();
 }

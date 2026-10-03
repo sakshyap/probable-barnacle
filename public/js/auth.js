@@ -99,10 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('admin_token', result.token);
         localStorage.setItem('admin_user', JSON.stringify(result.user));
 
-        // Also set token in cookie for 8 hours
-        document.cookie = `admin_token=${result.token}; path=/; max-age=28800; SameSite=Lax`;
-
-        // Redirect to admin dashboard
+        // The session cookies are set by the server as httpOnly.
         window.location.href = '/admin/dashboard';
       } else {
         showError(result.error || 'Invalid email or password.');

@@ -6,6 +6,7 @@ import {
   removeMessage
 } from '../data/portfolio-db.js';
 import { verifyPortfolioToken } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ setInterval(() => {
  * Public endpoint backing the contact form. Rate limited and honeypot guarded
  * so the inbox cannot be flooded by bots.
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
 
   if (isRateLimited(ip)) {
@@ -83,47 +84,63 @@ router.post('/', (req, res) => {
 
   recordSubmission(ip);
 
-  res.status(201).json({
-    success: true,
-    message: 'Your message was sent. Sakshi will get back to you soon.',
-    data: createMessage({ name, email, subject, message })
-  });
+  try {
+    res.status(201).json({
+      success: true,
+      message: 'Your message was sent. Sakshi will get back to you soon.',
+      data: await createMessage({ name, email, subject, message })
+    });
+  } catch (err) {
+    sendError(res, err, 'Could not send your message right now.');
+  }
 });
 
 /**
  * GET /api/portfolio/messages (admin)
  */
-router.get('/', verifyPortfolioToken, (req, res) => {
-  const messages = getMessages();
-  res.status(200).json({
-    success: true,
-    count: messages.length,
-    unread: messages.filter((item) => !item.read).length,
-    data: messages
-  });
+router.get('/', verifyPortfolioToken, async (req, res) => {
+  try {
+    const messages = await getMessages();
+    res.status(200).json({
+      success: true,
+      count: messages.length,
+      unread: messages.filter((item) => !item.read).length,
+      data: messages
+    });
+  } catch (err) {
+    sendError(res, err, 'Failed to retrieve messages.');
+  }
 });
 
 /**
  * PUT /api/portfolio/messages/:id/read
  */
-router.put('/:id/read', verifyPortfolioToken, (req, res) => {
-  const read = req.body?.read !== false;
-  const updated = markMessageRead(req.params.id, read);
-  if (!updated) {
-    return res.status(404).json({ success: false, error: `No message with id "${req.params.id}".` });
+router.put('/:id/read', verifyPortfolioToken, async (req, res) => {
+  try {
+    const read = req.body?.read !== false;
+    const updated = await markMessageRead(req.params.id, read);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: `No message with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, data: updated });
+  } catch (err) {
+    sendError(res, err, 'Failed to update the message.');
   }
-  res.status(200).json({ success: true, data: updated });
 });
 
 /**
  * DELETE /api/portfolio/messages/:id
  */
-router.delete('/:id', verifyPortfolioToken, (req, res) => {
-  const removed = removeMessage(req.params.id);
-  if (!removed) {
-    return res.status(404).json({ success: false, error: `No message with id "${req.params.id}".` });
+router.delete('/:id', verifyPortfolioToken, async (req, res) => {
+  try {
+    const removed = await removeMessage(req.params.id);
+    if (!removed) {
+      return res.status(404).json({ success: false, error: `No message with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, message: 'Message deleted' });
+  } catch (err) {
+    sendError(res, err, 'Failed to delete the message.');
   }
-  res.status(200).json({ success: true, message: 'Message deleted' });
 });
 
 export default router;

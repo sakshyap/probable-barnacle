@@ -1,0 +1,28 @@
+# Render blueprint - deploys the portfolio + admin API as one Node web service.
+# Create the service with: New > Blueprint > select this repository.
+# The three SUPABASE_* values are prompted for on the first deploy (sync: false)
+# and then stored as encrypted environment variables in Render.
+services:
+  - type: web
+    name: sakshi-portfolio
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      # Project URL, e.g. https://abcdefghijklm.supabase.co
+      - key: SUPABASE_URL
+        sync: false
+      # "anon" / "publishable" key
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      # "service_role" / "secret" key - never commit this
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

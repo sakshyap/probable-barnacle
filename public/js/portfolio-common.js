@@ -61,6 +61,12 @@ export async function api(path, { method = 'GET', body, auth = true } = {}) {
     body: body === undefined ? undefined : JSON.stringify(body)
   });
 
+  // The server silently exchanges the refresh cookie for a fresh access token
+  // when ours has expired, and hands the new one back here. Storing it means
+  // only one refresh round trip per hour instead of one per request.
+  const refreshed = response.headers.get('X-Refreshed-Token');
+  if (refreshed) setToken(refreshed);
+
   let payload = null;
   try {
     payload = await response.json();

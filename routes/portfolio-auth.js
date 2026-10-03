@@ -1,11 +1,8 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
-import { getPortfolioAdmin, updatePortfolioAdmin } from '../data/portfolio-db.js';
-import {
-  signPortfolioToken,
-  verifyPortfolioToken,
-  COOKIE_NAME
-} from '../middleware/portfolio-auth.js';
+import { getSupabase, getSupabaseAnon } from '../data/supabase.js';
+import { issueSession, clearSession, toSessionUser } from '../middleware/supabase-session.js';
+import { verifyPortfolioToken, NAMESPACE } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -53,9 +50,11 @@ setInterval(() => {
 
 /**
  * POST /api/portfolio/auth/login
+ * Body: { email, password }
  *
- * Throttled per email and per IP. The configured admin password is a short
- * numeric PIN, so without this the endpoint is brute-forceable.
+ * Signs in through Supabase Auth and mirrors the session into httpOnly
+ * cookies. Still throttled per email and per IP so the endpoint cannot be
+ * used to brute-force a password through Supabase.
  */
 router.post('/login', async (req, res) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
@@ -81,18 +80,9 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    const admin = getPortfolioAdmin();
-    if (!admin) {
-      return res.status(500).json({
-        success: false,
-        error: 'Portfolio admin is not configured in data/portfolio-db.json.'
-      });
-    }
+    const { data, error } = await getSupabaseAnon().auth.signInWithPassword({ email, password });
 
-    const emailMatches = (admin.email || '').toLowerCase() === email;
-    const passwordMatches = await bcrypt.compare(password, admin.passwordHash || '');
-
-    if (!emailMatches || !passwordMatches) {
+    if (error || !data?.session) {
       recordFailure(email, attemptsByEmail);
       recordFailure(ip, failuresByIp);
       return res.status(401).json({ success: false, error: 'Invalid email or password.' });
@@ -101,24 +91,20 @@ router.post('/login', async (req, res) => {
     clearFailures(email, attemptsByEmail);
     clearFailures(ip, failuresByIp);
 
-    const token = signPortfolioToken(admin);
-
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 8 * 60 * 60 * 1000,
-      path: '/'
+    issueSession(res, NAMESPACE, {
+      token: data.session.access_token,
+      refreshToken: data.session.refresh_token
     });
 
     return res.status(200).json({
       success: true,
       message: 'Signed in to the portfolio admin panel.',
-      token,
-      user: { id: admin.id, email: admin.email, name: admin.name, role: admin.role }
+      token: data.session.access_token,
+      refreshToken: data.session.refresh_token,
+      user: toSessionUser(data.user)
     });
   } catch (err) {
-    console.error('Portfolio login error:', err);
-    return res.status(500).json({ success: false, error: 'Could not sign you in right now.' });
+    return sendError(res, err, 'Could not sign you in right now.');
   }
 });
 
@@ -133,13 +119,16 @@ router.get('/me', verifyPortfolioToken, (req, res) => {
  * POST /api/portfolio/auth/logout
  */
 router.post('/logout', (req, res) => {
-  res.clearCookie(COOKIE_NAME, { path: '/' });
+  clearSession(res, NAMESPACE);
   res.status(200).json({ success: true, message: 'Signed out.' });
 });
 
 /**
  * PUT /api/portfolio/auth/password
  * Body: { currentPassword, newPassword }
+ *
+ * Supabase stores password hashes itself, so the current password is proved by
+ * attempting a sign-in before the new one is written through the admin API.
  */
 router.put('/password', verifyPortfolioToken, async (req, res) => {
   try {
@@ -159,19 +148,27 @@ router.put('/password', verifyPortfolioToken, async (req, res) => {
       });
     }
 
-    const admin = getPortfolioAdmin();
-    const matches = await bcrypt.compare(String(currentPassword), admin?.passwordHash || '');
-    if (!matches) {
+    const { error: signInError } = await getSupabaseAnon().auth.signInWithPassword({
+      email: req.portfolioAdmin.email,
+      password: String(currentPassword)
+    });
+
+    if (signInError) {
       return res.status(401).json({ success: false, error: 'Current password is incorrect.' });
     }
 
-    const passwordHash = await bcrypt.hash(String(newPassword), 12);
-    updatePortfolioAdmin({ passwordHash });
+    const { error } = await getSupabase().auth.admin.updateUserById(req.portfolioAdmin.id, {
+      password: String(newPassword)
+    });
+
+    if (error) {
+      console.error('Supabase password update failed:', error);
+      return res.status(500).json({ success: false, error: 'Could not update the password.' });
+    }
 
     return res.status(200).json({ success: true, message: 'Password updated successfully.' });
   } catch (err) {
-    console.error('Portfolio password change error:', err);
-    return res.status(500).json({ success: false, error: 'Could not update the password.' });
+    return sendError(res, err, 'Could not update the password.');
   }
 });
 

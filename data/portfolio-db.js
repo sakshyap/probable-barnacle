@@ -1,69 +1,14 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import {
+  getSupabase,
+  selectAll,
+  unwrap,
+  toCamelCase,
+  toSnakeCase
+} from './supabase.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DB_FILE = path.join(__dirname, 'portfolio-db.json');
-
-const COLLECTIONS = [
-  'socials',
-  'navItems',
-  'skillCategories',
-  'projects',
-  'posts',
-  'messages'
-];
-
-function emptyData() {
-  return {
-    admin: null,
-    profile: {},
-    socials: [],
-    navItems: [],
-    skillCategories: [],
-    projects: [],
-    posts: [],
-    messages: []
-  };
-}
-
-/**
- * Reads the portfolio store, backfilling any collection added in a later version
- * so a partially written file never crashes a request.
- */
-export function readPortfolioData() {
-  try {
-    if (!fs.existsSync(DB_FILE)) {
-      const initial = emptyData();
-      fs.writeFileSync(DB_FILE, JSON.stringify(initial, null, 2), 'utf-8');
-      return initial;
-    }
-
-    const parsed = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
-    const data = { ...emptyData(), ...parsed };
-
-    for (const key of COLLECTIONS) {
-      if (!Array.isArray(data[key])) data[key] = [];
-    }
-    if (!data.profile || typeof data.profile !== 'object') data.profile = {};
-
-    return data;
-  } catch (err) {
-    console.error('Error reading portfolio-db.json:', err);
-    return emptyData();
-  }
-}
-
-export function writePortfolioData(data) {
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-    return true;
-  } catch (err) {
-    console.error('Error writing portfolio-db.json:', err);
-    return false;
-  }
-}
+// ---------------------------------------------------------------------------
+// Row <-> object helpers
+// ---------------------------------------------------------------------------
 
 function toTrimmedString(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -82,63 +27,6 @@ function toStringArray(value) {
   return [];
 }
 
-// ---------------- Admin ----------------
-
-export function getPortfolioAdmin() {
-  return readPortfolioData().admin;
-}
-
-export function updatePortfolioAdmin(fields) {
-  const data = readPortfolioData();
-  if (!data.admin) return null;
-  data.admin = { ...data.admin, ...fields, updatedAt: new Date().toISOString() };
-  writePortfolioData(data);
-  return data.admin;
-}
-
-// ---------------- Profile ----------------
-
-export function getProfile() {
-  return readPortfolioData().profile;
-}
-
-/**
- * Merges only the keys the caller actually sent, so a partial form
- * never blanks out fields the admin did not open.
- */
-export function updateProfile(patch) {
-  const data = readPortfolioData();
-  data.profile = { ...data.profile, ...patch, updatedAt: new Date().toISOString() };
-  writePortfolioData(data);
-  return data.profile;
-}
-
-// ---------------- Generic collection helpers ----------------
-
-function findIndexById(list, id) {
-  return list.findIndex((item) => item.id === id);
-}
-
-function removeFromCollection(collection, id) {
-  const data = readPortfolioData();
-  const list = data[collection];
-  if (!Array.isArray(list)) return null;
-
-  const index = findIndexById(list, id);
-  if (index === -1) return null;
-
-  const [removed] = list.splice(index, 1);
-  writePortfolioData(data);
-  return removed;
-}
-
-function replaceCollection(collection, nextList) {
-  const data = readPortfolioData();
-  data[collection] = nextList;
-  writePortfolioData(data);
-  return nextList;
-}
-
 function slugify(value, fallback) {
   const slug = toTrimmedString(value)
     .toLowerCase()
@@ -147,91 +35,240 @@ function slugify(value, fallback) {
   return slug || fallback;
 }
 
-function uniqueId(collection, seed) {
-  const data = readPortfolioData();
-  const list = data[collection] || [];
-  if (!list.some((item) => item.id === seed)) return seed;
+/**
+ * Appends a short suffix instead of failing when the caller-supplied id is
+ * already taken, mirroring the behaviour the JSON store had.
+ */
+async function uniqueId(table, seed) {
+  const { data } = await getSupabase()
+    .from(table)
+    .select('id')
+    .eq('id', seed)
+    .maybeSingle();
+  if (!data) return seed;
   return `${seed}-${Date.now().toString(36)}`;
+}
+
+/**
+ * Assigns the next free `position` so new rows land at the end of the list
+ * unless the payload carries an explicit one.
+ */
+async function nextPosition(table) {
+  const { data } = await getSupabase()
+    .from(table)
+    .select('position')
+    .order('position', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (data?.position ?? -1) + 1;
+}
+
+/**
+ * Writes an explicit ordering. Ids that are not in the database are ignored,
+ * and rows missing from `orderedIds` keep their current position.
+ */
+async function applyOrder(table, orderedIds) {
+  const supabase = getSupabase();
+  const ids = orderedIds.filter((id) => typeof id === 'string' && id);
+
+  await Promise.all(
+    ids.map((id, index) =>
+      supabase.from(table).update({ position: index, updated_at: new Date().toISOString() }).eq('id', id)
+    )
+  );
+
+  return selectAll(table, '*', { column: 'position', ascending: true });
+}
+
+async function removeById(table, id) {
+  const supabase = getSupabase();
+  const { data: existing } = await supabase.from(table).select('*').eq('id', id).maybeSingle();
+  if (!existing) return null;
+
+  const { error } = await supabase.from(table).delete().eq('id', id);
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+
+  return toCamelCase(existing);
+}
+
+// ---------------- Profile ----------------
+
+const EMPTY_PROFILE = {
+  name: '',
+  title: '',
+  shortIntro: '',
+  location: '',
+  email: '',
+  status: '',
+  bioParagraph1: '',
+  bioParagraph2: '',
+  highlights: [],
+  stats: []
+};
+
+export async function getProfile() {
+  const supabase = getSupabase();
+  const { data } = await supabase.from('profile').select('*').eq('id', 'main').maybeSingle();
+
+  if (!data) return { ...EMPTY_PROFILE };
+  const { id, updatedAt, ...rest } = toCamelCase(data);
+  return rest;
+}
+
+/**
+ * Accepts a partial patch and writes only the keys the caller actually sent,
+ * so an admin form that never opens the location field cannot blank it out.
+ */
+export async function updateProfile(patch) {
+  const supabase = getSupabase();
+  const payload = toSnakeCase({
+    ...patch,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('profile')
+    .update(payload)
+    .eq('id', 'main')
+    .select()
+    .maybeSingle();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+
+  const { id, updatedAt, ...rest } = toCamelCase(data || {});
+  return rest;
 }
 
 // ---------------- Socials ----------------
 
-export function getSocials() {
-  return readPortfolioData().socials;
+export async function getSocials() {
+  return selectAll('socials', '*', { column: 'position', ascending: true });
 }
 
-export function createSocial(payload) {
-  const data = readPortfolioData();
-  const social = {
-    platform: toTrimmedString(payload.platform),
-    url: toTrimmedString(payload.url),
-    iconName: toTrimmedString(payload.iconName) || 'Mail',
-    label: toTrimmedString(payload.label) || toTrimmedString(payload.platform)
-  };
-  data.socials.push(social);
-  writePortfolioData(data);
-  return social;
+export async function createSocial(payload) {
+  const supabase = getSupabase();
+  const platform = toTrimmedString(payload.platform);
+  const position = await nextPosition('socials');
+
+  const { data, error } = await supabase
+    .from('socials')
+    .insert({
+      platform,
+      url: toTrimmedString(payload.url),
+      icon_name: toTrimmedString(payload.iconName) || 'Mail',
+      label: toTrimmedString(payload.label) || platform,
+      position
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function updateSocial(platform, payload) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.socials, platform);
-  if (index === -1) return null;
-  data.socials[index] = {
-    ...data.socials[index],
-    platform: toTrimmedString(payload.platform) || data.socials[index].platform,
-    url: payload.url !== undefined ? toTrimmedString(payload.url) : data.socials[index].url,
-    iconName: payload.iconName !== undefined ? toTrimmedString(payload.iconName) : data.socials[index].iconName,
-    label: payload.label !== undefined ? toTrimmedString(payload.label) : data.socials[index].label
-  };
-  writePortfolioData(data);
-  return data.socials[index];
+export async function updateSocial(platform, payload) {
+  const supabase = getSupabase();
+
+  const { data: existing } = await supabase
+    .from('socials')
+    .select('*')
+    .eq('platform', platform)
+    .maybeSingle();
+  if (!existing) return null;
+
+  const current = toCamelCase(existing);
+  const patch = toSnakeCase({
+    url: payload.url !== undefined ? toTrimmedString(payload.url) : current.url,
+    iconName: payload.iconName !== undefined ? toTrimmedString(payload.iconName) : current.iconName,
+    label: payload.label !== undefined ? toTrimmedString(payload.label) : current.label,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('socials')
+    .update(patch)
+    .eq('platform', platform)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function removeSocial(platform) {
-  return removeFromCollection('socials', platform);
+export async function removeSocial(platform) {
+  const supabase = getSupabase();
+  const { data: existing } = await supabase
+    .from('socials')
+    .select('*')
+    .eq('platform', platform)
+    .maybeSingle();
+  if (!existing) return null;
+
+  const { error } = await supabase.from('socials').delete().eq('platform', platform);
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+
+  return toCamelCase(existing);
 }
 
 // ---------------- Nav items ----------------
 
-export function getNavItems() {
-  return readPortfolioData().navItems;
+export async function getNavItems() {
+  return selectAll('nav_items', '*', { column: 'position', ascending: true });
 }
 
-export function createNavItem(payload) {
-  const data = readPortfolioData();
+export async function createNavItem(payload) {
+  const supabase = getSupabase();
   const label = toTrimmedString(payload.label);
-  const item = {
-    id: toTrimmedString(payload.id) || slugify(label, `nav-${Date.now().toString(36)}`),
-    label,
-    href: toTrimmedString(payload.href) || '#'
-  };
-  data.navItems.push(item);
-  writePortfolioData(data);
-  return item;
+  const seed = toTrimmedString(payload.id) || slugify(label, `nav-${Date.now().toString(36)}`);
+  const position = await nextPosition('nav_items');
+
+  const { data, error } = await supabase
+    .from('nav_items')
+    .insert({
+      id: await uniqueId('nav_items', seed),
+      label,
+      href: toTrimmedString(payload.href) || '#',
+      position
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function updateNavItem(id, payload) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.navItems, id);
-  if (index === -1) return null;
-  data.navItems[index] = {
-    ...data.navItems[index],
-    label: payload.label !== undefined ? toTrimmedString(payload.label) : data.navItems[index].label,
-    href: payload.href !== undefined ? toTrimmedString(payload.href) : data.navItems[index].href
-  };
-  writePortfolioData(data);
-  return data.navItems[index];
+export async function updateNavItem(id, payload) {
+  const supabase = getSupabase();
+
+  const { data: existing } = await supabase.from('nav_items').select('*').eq('id', id).maybeSingle();
+  if (!existing) return null;
+
+  const current = toCamelCase(existing);
+  const patch = toSnakeCase({
+    label: payload.label !== undefined ? toTrimmedString(payload.label) : current.label,
+    href: payload.href !== undefined ? toTrimmedString(payload.href) : current.href,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('nav_items')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function removeNavItem(id) {
-  return removeFromCollection('navItems', id);
+export async function removeNavItem(id) {
+  return removeById('nav_items', id);
 }
 
 // ---------------- Skill categories ----------------
 
-export function getSkillCategories() {
-  return readPortfolioData().skillCategories;
+export async function getSkillCategories() {
+  return selectAll('skill_categories', '*', { column: 'position', ascending: true });
 }
 
 function normalizeSkillItems(rawItems) {
@@ -248,224 +285,330 @@ function normalizeSkillItems(rawItems) {
     }));
 }
 
-function normalizeSkillCategory(payload, existing = {}) {
-  return {
-    id: toTrimmedString(payload.id) || toTrimmedString(existing.id) || slugify(payload.title, `skills-${Date.now().toString(36)}`),
-    title: toTrimmedString(payload.title) ?? toTrimmedString(existing.title),
-    subtitle: toTrimmedString(payload.subtitle) ?? toTrimmedString(existing.subtitle),
-    icon: toTrimmedString(payload.icon) || toTrimmedString(existing.icon) || 'Sparkles',
-    accentColor: toTrimmedString(payload.accentColor) || toTrimmedString(existing.accentColor) || 'purple',
-    items: payload.items !== undefined ? normalizeSkillItems(payload.items) : existing.items || []
-  };
+export async function createSkillCategory(payload) {
+  const supabase = getSupabase();
+  const seed =
+    toTrimmedString(payload.id) ||
+    slugify(payload.title, `skills-${Date.now().toString(36)}`);
+
+  const { data, error } = await supabase
+    .from('skill_categories')
+    .insert({
+      id: await uniqueId('skill_categories', seed),
+      title: toTrimmedString(payload.title),
+      subtitle: toTrimmedString(payload.subtitle),
+      icon: toTrimmedString(payload.icon) || 'Sparkles',
+      accent_color: toTrimmedString(payload.accentColor) || 'purple',
+      items: normalizeSkillItems(payload.items),
+      position: await nextPosition('skill_categories')
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function createSkillCategory(payload) {
-  const data = readPortfolioData();
-  const category = normalizeSkillCategory(payload);
-  category.id = uniqueId('skillCategories', category.id);
-  data.skillCategories.push(category);
-  writePortfolioData(data);
-  return category;
+export async function updateSkillCategory(id, payload) {
+  const supabase = getSupabase();
+
+  const { data: existing } = await supabase
+    .from('skill_categories')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (!existing) return null;
+
+  const current = toCamelCase(existing);
+  const patch = toSnakeCase({
+    title: payload.title !== undefined ? toTrimmedString(payload.title) : current.title,
+    subtitle: payload.subtitle !== undefined ? toTrimmedString(payload.subtitle) : current.subtitle,
+    icon: payload.icon !== undefined ? toTrimmedString(payload.icon) : current.icon,
+    accentColor:
+      payload.accentColor !== undefined ? toTrimmedString(payload.accentColor) : current.accentColor,
+    items: payload.items !== undefined ? normalizeSkillItems(payload.items) : current.items,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('skill_categories')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function updateSkillCategory(id, payload) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.skillCategories, id);
-  if (index === -1) return null;
-  const category = normalizeSkillCategory(payload, data.skillCategories[index]);
-  category.id = id;
-  data.skillCategories[index] = category;
-  writePortfolioData(data);
-  return category;
+export async function removeSkillCategory(id) {
+  return removeById('skill_categories', id);
 }
 
-export function removeSkillCategory(id) {
-  return removeFromCollection('skillCategories', id);
-}
-
-export function reorderSkillCategories(orderedIds) {
-  const data = readPortfolioData();
-  const byId = new Map(data.skillCategories.map((item) => [item.id, item]));
-  const ordered = [];
-  for (const id of orderedIds) {
-    if (byId.has(id)) {
-      ordered.push(byId.get(id));
-      byId.delete(id);
-    }
-  }
-  return replaceCollection('skillCategories', [...ordered, ...byId.values()]);
+export async function reorderSkillCategories(orderedIds) {
+  return applyOrder('skill_categories', orderedIds);
 }
 
 // ---------------- Projects ----------------
 
-export function getProjects() {
-  return readPortfolioData().projects;
+export async function getProjects() {
+  return selectAll('projects', '*', { column: 'position', ascending: true });
 }
 
-export function getProjectById(id) {
-  return getProjects().find((project) => project.id === id) || null;
+export async function getProjectById(id) {
+  const { data } = await getSupabase().from('projects').select('*').eq('id', id).maybeSingle();
+  return data ? toCamelCase(data) : null;
 }
 
-function normalizeProject(payload, existing = {}) {
-  return {
-    id: toTrimmedString(payload.id) || toTrimmedString(existing.id) || slugify(payload.title, `project-${Date.now().toString(36)}`),
-    title: toTrimmedString(payload.title) ?? toTrimmedString(existing.title),
-    badge: toTrimmedString(payload.badge) ?? toTrimmedString(existing.badge),
-    tagline: toTrimmedString(payload.tagline) ?? toTrimmedString(existing.tagline),
-    description: toTrimmedString(payload.description) ?? toTrimmedString(existing.description),
-    longDescription: toTrimmedString(payload.longDescription) ?? toTrimmedString(existing.longDescription),
-    techStack: toStringArray(payload.techStack ?? existing.techStack),
-    features: toStringArray(payload.features ?? existing.features),
-    category: toTrimmedString(payload.category) || toTrimmedString(existing.category) || 'Website Development',
-    githubUrl: toTrimmedString(payload.githubUrl ?? existing.githubUrl),
-    liveUrl: toTrimmedString(payload.liveUrl ?? existing.liveUrl),
+export async function createProject(payload) {
+  const supabase = getSupabase();
+  const seed =
+    toTrimmedString(payload.id) ||
+    slugify(payload.title, `project-${Date.now().toString(36)}`);
+
+  const { data, error } = await supabase
+    .from('projects')
+    .insert({
+      id: await uniqueId('projects', seed),
+      title: toTrimmedString(payload.title),
+      badge: toTrimmedString(payload.badge),
+      tagline: toTrimmedString(payload.tagline),
+      description: toTrimmedString(payload.description),
+      long_description: toTrimmedString(payload.longDescription),
+      tech_stack: toStringArray(payload.techStack),
+      features: toStringArray(payload.features),
+      category: toTrimmedString(payload.category) || 'Website Development',
+      github_url: toTrimmedString(payload.githubUrl),
+      live_url: toTrimmedString(payload.liveUrl),
+      thumbnail_gradient:
+        toTrimmedString(payload.thumbnailGradient) ||
+        'from-violet-900/60 via-indigo-900/40 to-slate-900/80',
+      preview_type: toTrimmedString(payload.previewType) || 'school',
+      image_url: toTrimmedString(payload.imageUrl),
+      position: await nextPosition('projects')
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
+}
+
+export async function updateProject(id, payload) {
+  const supabase = getSupabase();
+
+  const { data: existing } = await supabase.from('projects').select('*').eq('id', id).maybeSingle();
+  if (!existing) return null;
+
+  const current = toCamelCase(existing);
+  const patch = toSnakeCase({
+    title: payload.title !== undefined ? toTrimmedString(payload.title) : current.title,
+    badge: payload.badge !== undefined ? toTrimmedString(payload.badge) : current.badge,
+    tagline: payload.tagline !== undefined ? toTrimmedString(payload.tagline) : current.tagline,
+    description:
+      payload.description !== undefined ? toTrimmedString(payload.description) : current.description,
+    longDescription:
+      payload.longDescription !== undefined
+        ? toTrimmedString(payload.longDescription)
+        : current.longDescription,
+    techStack:
+      payload.techStack !== undefined ? toStringArray(payload.techStack) : current.techStack,
+    features: payload.features !== undefined ? toStringArray(payload.features) : current.features,
+    category: payload.category !== undefined ? toTrimmedString(payload.category) : current.category,
+    githubUrl:
+      payload.githubUrl !== undefined ? toTrimmedString(payload.githubUrl) : current.githubUrl,
+    liveUrl: payload.liveUrl !== undefined ? toTrimmedString(payload.liveUrl) : current.liveUrl,
     thumbnailGradient:
-      toTrimmedString(payload.thumbnailGradient ?? existing.thumbnailGradient) ||
-      'from-violet-900/60 via-indigo-900/40 to-slate-900/80',
-    previewType: toTrimmedString(payload.previewType ?? existing.previewType) || 'school',
-    imageUrl: toTrimmedString(payload.imageUrl ?? existing.imageUrl)
-  };
+      payload.thumbnailGradient !== undefined
+        ? toTrimmedString(payload.thumbnailGradient)
+        : current.thumbnailGradient,
+    previewType:
+      payload.previewType !== undefined ? toTrimmedString(payload.previewType) : current.previewType,
+    imageUrl: payload.imageUrl !== undefined ? toTrimmedString(payload.imageUrl) : current.imageUrl,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('projects')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function createProject(payload) {
-  const data = readPortfolioData();
-  const project = normalizeProject(payload);
-  project.id = uniqueId('projects', project.id);
-  data.projects.push(project);
-  writePortfolioData(data);
-  return project;
+export async function removeProject(id) {
+  return removeById('projects', id);
 }
 
-export function updateProject(id, payload) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.projects, id);
-  if (index === -1) return null;
-  const project = normalizeProject(payload, data.projects[index]);
-  project.id = id;
-  data.projects[index] = project;
-  writePortfolioData(data);
-  return project;
-}
-
-export function removeProject(id) {
-  return removeFromCollection('projects', id);
-}
-
-export function reorderProjects(orderedIds) {
-  const data = readPortfolioData();
-  const byId = new Map(data.projects.map((item) => [item.id, item]));
-  const ordered = [];
-  for (const id of orderedIds) {
-    if (byId.has(id)) {
-      ordered.push(byId.get(id));
-      byId.delete(id);
-    }
-  }
-  return replaceCollection('projects', [...ordered, ...byId.values()]);
+export async function reorderProjects(orderedIds) {
+  return applyOrder('projects', orderedIds);
 }
 
 // ---------------- Blog posts ----------------
 
-export function getPosts({ includeDrafts = true } = {}) {
-  const posts = readPortfolioData().posts;
-  return includeDrafts ? posts : posts.filter((post) => post.status === 'Published');
+export async function getPosts({ includeDrafts = true } = {}) {
+  const supabase = getSupabase();
+
+  let query = supabase.from('portfolio_posts').select('*').order('created_at', { ascending: false });
+  if (!includeDrafts) query = query.eq('status', 'Published');
+
+  const rows = await unwrap(query);
+  return (rows || []).map(toCamelCase);
 }
 
-export function getPostById(id) {
-  return getPosts().find((post) => post.id === id) || null;
+export async function getPostById(id) {
+  const { data } = await getSupabase()
+    .from('portfolio_posts')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  return data ? toCamelCase(data) : null;
 }
 
-function normalizePost(payload, existing = {}) {
-  return {
-    id: toTrimmedString(payload.id) || toTrimmedString(existing.id) || `post-${Date.now()}`,
-    title: toTrimmedString(payload.title) ?? toTrimmedString(existing.title),
-    author: toTrimmedString(payload.author) ?? toTrimmedString(existing.author),
-    category: toTrimmedString(payload.category) || toTrimmedString(existing.category) || 'Announcements',
-    excerpt: toTrimmedString(payload.excerpt ?? existing.excerpt),
-    content: toTrimmedString(payload.content ?? existing.content),
-    imageUrl: toTrimmedString(payload.imageUrl ?? existing.imageUrl),
-    status: (toTrimmedString(payload.status ?? existing.status) === 'Draft' ? 'Draft' : 'Published')
-  };
+export async function createPost(payload) {
+  const supabase = getSupabase();
+  const seed = toTrimmedString(payload.id) || `post-${Date.now()}`;
+
+  const { data, error } = await supabase
+    .from('portfolio_posts')
+    .insert({
+      id: await uniqueId('portfolio_posts', seed),
+      title: toTrimmedString(payload.title),
+      author: toTrimmedString(payload.author),
+      category: toTrimmedString(payload.category) || 'Announcements',
+      excerpt: toTrimmedString(payload.excerpt),
+      content: toTrimmedString(payload.content),
+      image_url: toTrimmedString(payload.imageUrl),
+      status: toTrimmedString(payload.status) === 'Draft' ? 'Draft' : 'Published',
+      created_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function createPost(payload) {
-  const data = readPortfolioData();
-  const post = {
-    ...normalizePost(payload),
-    id: uniqueId('posts', toTrimmedString(payload.id) || `post-${Date.now()}`),
-    createdAt: new Date().toISOString()
-  };
-  data.posts.unshift(post);
-  writePortfolioData(data);
-  return post;
+export async function updatePost(id, payload) {
+  const supabase = getSupabase();
+
+  const { data: existing } = await supabase
+    .from('portfolio_posts')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (!existing) return null;
+
+  const current = toCamelCase(existing);
+  const patch = toSnakeCase({
+    title: payload.title !== undefined ? toTrimmedString(payload.title) : current.title,
+    author: payload.author !== undefined ? toTrimmedString(payload.author) : current.author,
+    category: payload.category !== undefined ? toTrimmedString(payload.category) : current.category,
+    excerpt: payload.excerpt !== undefined ? toTrimmedString(payload.excerpt) : current.excerpt,
+    content: payload.content !== undefined ? toTrimmedString(payload.content) : current.content,
+    imageUrl: payload.imageUrl !== undefined ? toTrimmedString(payload.imageUrl) : current.imageUrl,
+    status:
+      payload.status !== undefined
+        ? toTrimmedString(payload.status) === 'Draft'
+          ? 'Draft'
+          : 'Published'
+        : current.status,
+    updated_at: new Date().toISOString()
+  });
+
+  const { data, error } = await supabase
+    .from('portfolio_posts')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function updatePost(id, payload) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.posts, id);
-  if (index === -1) return null;
-  data.posts[index] = {
-    ...normalizePost(payload, data.posts[index]),
-    id,
-    createdAt: data.posts[index].createdAt,
-    updatedAt: new Date().toISOString()
-  };
-  writePortfolioData(data);
-  return data.posts[index];
-}
-
-export function removePost(id) {
-  return removeFromCollection('posts', id);
+export async function removePost(id) {
+  return removeById('portfolio_posts', id);
 }
 
 // ---------------- Contact messages ----------------
 
-export function getMessages() {
-  return readPortfolioData().messages;
+export async function getMessages() {
+  const rows = await unwrap(
+    getSupabase().from('messages').select('*').order('created_at', { ascending: false })
+  );
+  return (rows || []).map(toCamelCase);
 }
 
-export function createMessage(payload) {
-  const data = readPortfolioData();
-  const message = {
-    id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    name: toTrimmedString(payload.name),
-    email: toTrimmedString(payload.email).toLowerCase(),
-    subject: toTrimmedString(payload.subject),
-    message: toTrimmedString(payload.message),
-    read: false,
-    createdAt: new Date().toISOString()
-  };
-  data.messages.unshift(message);
-  writePortfolioData(data);
-  return message;
+export async function createMessage(payload) {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from('messages')
+    .insert({
+      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: toTrimmedString(payload.name),
+      email: toTrimmedString(payload.email).toLowerCase(),
+      subject: toTrimmedString(payload.subject),
+      message: toTrimmedString(payload.message),
+      read: false,
+      created_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`Supabase request failed: ${error.message}`);
+  return toCamelCase(data);
 }
 
-export function markMessageRead(id, read = true) {
-  const data = readPortfolioData();
-  const index = findIndexById(data.messages, id);
-  if (index === -1) return null;
-  data.messages[index] = { ...data.messages[index], read: Boolean(read) };
-  writePortfolioData(data);
-  return data.messages[index];
+export async function markMessageRead(id, read = true) {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from('messages')
+    .update({ read: Boolean(read) })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    // A missing row surfaces as PGRST116 rather than an empty result.
+    if (error.code === 'PGRST116') return null;
+    throw new Error(`Supabase request failed: ${error.message}`);
+  }
+
+  return toCamelCase(data);
 }
 
-export function removeMessage(id) {
-  return removeFromCollection('messages', id);
+export async function removeMessage(id) {
+  return removeById('messages', id);
 }
 
 // ---------------- Aggregate ----------------
 
 /**
- * Everything the public portfolio needs, drafts excluded.
+ * Everything the public portfolio renders, in one round trip's worth of
+ * parallel queries. Drafts are excluded.
  */
-export function getPublicContent() {
-  const data = readPortfolioData();
+export async function getPublicContent() {
+  const [profile, socials, navItems, skillCategories, projects, publishedPosts] = await Promise.all([
+    getProfile(),
+    getSocials(),
+    getNavItems(),
+    getSkillCategories(),
+    getProjects(),
+    getPosts({ includeDrafts: false })
+  ]);
+
   return {
-    profile: data.profile,
-    socials: data.socials,
-    navItems: data.navItems,
-    skillCategories: data.skillCategories,
-    projects: data.projects,
-    posts: data.posts.filter((post) => post.status === 'Published')
+    profile,
+    socials,
+    navItems,
+    skillCategories,
+    projects,
+    posts: publishedPosts
   };
 }

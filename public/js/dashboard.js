@@ -122,6 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(url, { ...options, headers });
 
+      // If the server issued a fresh access token during this request, store it
+      // so the legacy dashboard keeps its session alive for another hour.
+      const refreshed = response.headers.get('X-Refreshed-Token');
+      if (refreshed) {
+        token = refreshed;
+        localStorage.setItem('admin_token', token);
+      }
+
       // If token expired or unauthorized, clean up and redirect to /admin
       if (response.status === 401) {
         showToast('Session expired. Redirecting to login...', 'error');

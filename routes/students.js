@@ -1,6 +1,7 @@
 import express from 'express';
 import { getAllStudents, createStudent, removeStudent } from '../data/db.js';
 import { verifyToken } from '../middleware/auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -11,17 +12,16 @@ router.use(verifyToken);
  * GET /api/students
  * Returns the list of all students
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const students = getAllStudents();
+    const students = await getAllStudents();
     res.status(200).json({
       success: true,
       count: students.length,
       data: students
     });
   } catch (err) {
-    console.error('Error fetching students:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve students list.' });
+    sendError(res, err, 'Failed to retrieve students list.');
   }
 });
 
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
  * Creates a new student record
  * Body: { name, email, enrolledCourse }
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { name, email, enrolledCourse } = req.body;
 
@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
     }
 
     // Check if email already registered
-    const existingStudents = getAllStudents();
+    const existingStudents = await getAllStudents();
     const isDuplicate = existingStudents.some(
       (s) => s.email.toLowerCase() === email.trim().toLowerCase()
     );
@@ -57,7 +57,7 @@ router.post('/', (req, res) => {
       });
     }
 
-    const newStudent = createStudent({ name, email, enrolledCourse });
+    const newStudent = await createStudent({ name, email, enrolledCourse });
 
     res.status(201).json({
       success: true,
@@ -65,8 +65,7 @@ router.post('/', (req, res) => {
       data: newStudent
     });
   } catch (err) {
-    console.error('Error adding student:', err);
-    res.status(500).json({ success: false, error: 'Failed to create student record.' });
+    sendError(res, err, 'Failed to create student record.');
   }
 });
 
@@ -74,10 +73,10 @@ router.post('/', (req, res) => {
  * DELETE /api/students/:id
  * Removes a student by ID
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const removed = removeStudent(id);
+    const removed = await removeStudent(id);
 
     if (!removed) {
       return res.status(404).json({
@@ -91,8 +90,7 @@ router.delete('/:id', (req, res) => {
       message: 'Student removed successfully'
     });
   } catch (err) {
-    console.error('Error deleting student:', err);
-    res.status(500).json({ success: false, error: 'Failed to delete student record.' });
+    sendError(res, err, 'Failed to delete student record.');
   }
 });
 

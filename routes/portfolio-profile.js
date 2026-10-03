@@ -1,6 +1,7 @@
 import express from 'express';
 import { getProfile, updateProfile } from '../data/portfolio-db.js';
 import { verifyPortfolioToken } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -19,12 +20,11 @@ const TEXT_FIELDS = [
  * GET /api/portfolio/profile
  * Publicly readable - the hero and about sections depend on it.
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    res.status(200).json({ success: true, data: getProfile() });
+    res.status(200).json({ success: true, data: await getProfile() });
   } catch (err) {
-    console.error('Error fetching profile:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve the profile.' });
+    sendError(res, err, 'Failed to retrieve the profile.');
   }
 });
 
@@ -32,7 +32,7 @@ router.get('/', (req, res) => {
  * PUT /api/portfolio/profile
  * Accepts a partial patch; only the supplied keys are written.
  */
-router.put('/', verifyPortfolioToken, (req, res) => {
+router.put('/', verifyPortfolioToken, async (req, res) => {
   try {
     const body = req.body || {};
     const patch = {};
@@ -85,11 +85,10 @@ router.put('/', verifyPortfolioToken, (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully',
-      data: updateProfile(patch)
+      data: await updateProfile(patch)
     });
   } catch (err) {
-    console.error('Error updating profile:', err);
-    res.status(500).json({ success: false, error: 'Failed to update the profile.' });
+    sendError(res, err, 'Failed to update the profile.');
   }
 });
 

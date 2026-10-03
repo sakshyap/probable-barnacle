@@ -6,7 +6,8 @@ import {
   updatePost,
   removePost
 } from '../data/portfolio-db.js';
-import { verifyPortfolioToken } from '../middleware/portfolio-auth.js';
+import { verifyPortfolioToken, optionalPortfolioToken } from '../middleware/portfolio-auth.js';
+import { sendError } from '../middleware/error-response.js';
 
 const router = express.Router();
 
@@ -29,67 +30,82 @@ function validate(payload, { partial = false } = {}) {
  * Public endpoint used by the portfolio Blog section. Only published posts
  * are returned unless the caller is an authenticated admin with ?drafts=1.
  */
-router.get('/', (req, res) => {
+router.get('/', optionalPortfolioToken, async (req, res) => {
   try {
     const wantsDrafts = req.query.drafts === '1' && req.portfolioAdmin;
-    const posts = getPosts({ includeDrafts: Boolean(wantsDrafts) });
+    const posts = await getPosts({ includeDrafts: Boolean(wantsDrafts) });
     res.status(200).json({ success: true, count: posts.length, data: posts });
   } catch (err) {
-    console.error('Error fetching portfolio posts:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve blog posts.' });
+    sendError(res, err, 'Failed to retrieve blog posts.');
   }
 });
 
 /**
  * GET /api/portfolio/blog/:id
  */
-router.get('/:id', (req, res) => {
-  const post = getPostById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
+router.get('/:id', optionalPortfolioToken, async (req, res) => {
+  try {
+    const post = await getPostById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
+    }
+    if (post.status !== 'Published' && !req.portfolioAdmin) {
+      return res.status(404).json({ success: false, error: 'That post is not published.' });
+    }
+    res.status(200).json({ success: true, data: post });
+  } catch (err) {
+    sendError(res, err, 'Failed to retrieve the blog post.');
   }
-  if (post.status !== 'Published' && !req.portfolioAdmin) {
-    return res.status(404).json({ success: false, error: 'That post is not published.' });
-  }
-  res.status(200).json({ success: true, data: post });
 });
 
 /**
  * POST /api/portfolio/blog
  */
-router.post('/', verifyPortfolioToken, (req, res) => {
+router.post('/', verifyPortfolioToken, async (req, res) => {
   const body = req.body || {};
   const error = validate(body);
   if (error) return res.status(400).json({ success: false, error });
 
-  res.status(201).json({ success: true, message: 'Blog post created', data: createPost(body) });
+  try {
+    res.status(201).json({ success: true, message: 'Blog post created', data: await createPost(body) });
+  } catch (err) {
+    sendError(res, err, 'Failed to create the blog post.');
+  }
 });
 
 /**
  * PUT /api/portfolio/blog/:id
  */
-router.put('/:id', verifyPortfolioToken, (req, res) => {
+router.put('/:id', verifyPortfolioToken, async (req, res) => {
   const body = req.body || {};
   const error = validate(body, { partial: true });
   if (error) return res.status(400).json({ success: false, error });
 
-  const updated = updatePost(req.params.id, body);
-  if (!updated) {
-    return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
-  }
+  try {
+    const updated = await updatePost(req.params.id, body);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
+    }
 
-  res.status(200).json({ success: true, message: 'Blog post updated', data: updated });
+    res.status(200).json({ success: true, message: 'Blog post updated', data: updated });
+  } catch (err) {
+    sendError(res, err, 'Failed to update the blog post.');
+  }
 });
 
 /**
  * DELETE /api/portfolio/blog/:id
  */
-router.delete('/:id', verifyPortfolioToken, (req, res) => {
-  const removed = removePost(req.params.id);
-  if (!removed) {
-    return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
+router.delete('/:id', verifyPortfolioToken, async (req, res) => {
+  try {
+    const removed = await removePost(req.params.id);
+    if (!removed) {
+      return res.status(404).json({ success: false, error: `No blog post with id "${req.params.id}".` });
+    }
+    res.status(200).json({ success: true, message: 'Blog post deleted' });
+  } catch (err) {
+    sendError(res, err, 'Failed to delete the blog post.');
   }
-  res.status(200).json({ success: true, message: 'Blog post deleted' });
 });
 
 export default router;
