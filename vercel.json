@@ -1,13 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "buildCommand": "pnpm run build",
-  "installCommand": "pnpm install",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+  "functions": {
+    "api/[...path].js": {
+      "maxDuration": 30
     }
+  },
+  "rewrites": [
+    { "source": "/admin", "destination": "/login.html" },
+    { "source": "/admin/login", "destination": "/login.html" },
+    { "source": "/admin/dashboard", "destination": "/dashboard.html" },
+    { "source": "/portfolio-admin", "destination": "/portfolio-login.html" },
+    { "source": "/portfolio-admin/login", "destination": "/portfolio-login.html" },
+    { "source": "/portfolio-admin/dashboard", "destination": "/portfolio-dashboard.html" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
