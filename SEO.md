@@ -204,4 +204,52 @@ robots.txt ki `Sitemap: https://www.sbgpundri.com/sitemap.xml` line ab real file
 
 ---
 
-*Last verified: code scan based on `artifacts/school-website/`.*
+---
+
+## 5. Portfolio & Admin Panel (repo root) — SEO Implementation
+
+> Live: `https://probable-barnacle-bice.vercel.app/` (Vercel, SPA — Vite + React)
+> Source: `index.html`, `public/`
+
+### `index.html` (head)
+- **Title:** `Sakshi | Digital Marketing with AI Specialist & Full Stack Developer`
+- **Meta description:** Portfolio of Sakshi - Digital Marketing with AI Specialist combining marketing strategy, responsive web applications, and AI automated pipelines.
+- **Meta robots:** `index, follow` · **theme-color:** `#07090e`
+- **Canonical:** `<link rel="canonical" href="https://probable-barnacle-bice.vercel.app/" />`
+- **Open Graph:** `og:type=website`, `og:site_name`, `og:locale=en_IN`, `og:url`, `og:title`, `og:description`, `og:image` (`/og-image.jpg`, 1200x630) + `og:image:width/height/alt`
+- **Twitter Card:** `summary_large_image` + title/description/image
+- **JSON-LD (`@graph`):** `Person` (Sakshi, jobTitle, knowsAbout) + `WebSite` (publisher → Person `#person`)
+
+### `public/robots.txt`
+```txt
+User-agent: *
+Allow: /
+
+# Backend and admin panel routes (not for indexing)
+Disallow: /api/
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /portfolio-admin
+Disallow: /login.html
+Disallow: /dashboard.html
+Disallow: /portfolio-login.html
+Disallow: /portfolio-dashboard.html
+
+Sitemap: https://probable-barnacle-bice.vercel.app/sitemap.xml
+```
+Saare public pages allowed; sirf API aur admin panel routes block hain. Vite `public/` ko `dist/` mein copy karta hai, aur Vercel par filesystem (static file) ko rewrites se pehle priority milti hai — isliye `/robots.txt` aur `/sitemap.xml` real files ke roop mein serve hote hain (SPA fallback `/index.html` nahi).
+
+### `public/sitemap.xml`
+7 URLs — home (`/`) + SPA sections (`#about`, `#skills`, `#ai-studio`, `#projects`, `#blog`, `#contact`); `lastmod` 2026-10-06, per-entry `changefreq`/`priority`.
+
+### `public/og-image.jpg`
+1200x630, ~78 KB — dark background, portrait + name/designation text. `og:image`/`twitter:image` absolute URL: `https://probable-barnacle-bice.vercel.app/og-image.jpg`.
+
+### Pending / To-Do (portfolio)
+- [ ] **Google Search Console** — property add + verify, sitemap submit (`https://probable-barnacle-bice.vercel.app/sitemap.xml`).
+- [ ] Favicon add karna (`index.html` mein abhi `<link rel="icon">` nahi hai).
+- [ ] SPA ke liye per-page unique title/description (single-page app — sirf hash sections hain).
+
+---
+
+*Last verified: code scan based on `artifacts/school-website/` (§1–4) and repo root (§5).*
