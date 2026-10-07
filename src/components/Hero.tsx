@@ -128,7 +128,7 @@ export default function Hero({
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-none"
               >
                 <span className={`bg-gradient-to-r ${accentGradient} bg-clip-text text-transparent drop-shadow-[0_2px_20px_rgba(255,255,255,0.15)]`}>
-                  {PERSONAL_INFO.name}
+                  Sakshi Kashyap
                 </span>
               </h1>
             </div>
