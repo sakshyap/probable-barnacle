@@ -16,6 +16,8 @@
     { "source": "/portfolio-admin", "destination": "/portfolio-login.html" },
     { "source": "/portfolio-admin/login", "destination": "/portfolio-login.html" },
     { "source": "/portfolio-admin/dashboard", "destination": "/portfolio-dashboard.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/((?!api|sitemap\\.xml|robots\\.txt).*)", "destination": "/index.html" }
   ]
 }
