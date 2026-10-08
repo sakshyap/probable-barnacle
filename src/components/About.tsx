@@ -66,8 +66,9 @@ export default function About({ onScrollTo, theme }: AboutProps) {
                   {customPhotoUrl ? (
                     <img
                       src={customPhotoUrl}
-                      alt="Sakshi - Digital Marketing with AI Specialist"
+                      alt="Sakshi Kashyap - Digital Marketing with AI Specialist portrait"
                       referrerPolicy="no-referrer"
+                      loading="lazy"
                       className="w-full h-full object-cover object-top"
                       onError={() => setCustomPhotoUrl(null)}
                     />

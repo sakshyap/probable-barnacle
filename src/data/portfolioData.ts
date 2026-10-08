@@ -1,7 +1,7 @@
 import { NavItem, SkillCategory, Project, SocialLink, ThemeConfig } from '../types';
 import schoolPortalImg from '../assets/images/project_school_portal_1790317925562.jpg';
-import arcadeGameImg from '../assets/images/project_arcade_game_1790317939580.jpg';
-import videoStudioImg from '../assets/images/project_ai_video_studio_1790317956809.jpg';
+import arcadeGameImg from '../assets/images/project_arcade_game_1790317939580.webp';
+import videoStudioImg from '../assets/images/project_ai_video_studio_1790317956809.webp';
 
 export const THEME_CONFIGS: Record<string, ThemeConfig> = {
   violet: {

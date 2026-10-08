@@ -290,8 +290,9 @@ export default function Projects({ theme }: ProjectsProps) {
                       <div className="relative w-full h-44 rounded-xl overflow-hidden border border-white/[0.1] shadow-xl group/img">
                         <img
                           src={project.imageUrl}
-                          alt={project.title}
+                          alt={`${project.title} - ${project.badge} project showcase`}
                           referrerPolicy="no-referrer"
+                          loading="lazy"
                           className="w-full h-full object-cover object-center transition-transform duration-500 group-hover/img:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -508,7 +509,8 @@ export default function Projects({ theme }: ProjectsProps) {
               <div className="w-full h-48 sm:h-56 rounded-2xl overflow-hidden border border-white/[0.1] relative">
                 <img
                   src={activeModalProject.imageUrl}
-                  alt={activeModalProject.title}
+                  alt={`${activeModalProject.title} - ${activeModalProject.badge} project showcase`}
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c101c] via-transparent to-transparent opacity-60" />

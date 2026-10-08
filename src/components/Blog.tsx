@@ -170,7 +170,8 @@ export default function Blog({ theme }: BlogProps) {
                     <div className="relative h-44 w-full overflow-hidden bg-slate-900">
                       <img
                         src={post.imageUrl}
-                        alt={post.title}
+                        alt={`${post.title} - ${post.category} article thumbnail`}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-black/20" />
@@ -301,7 +302,8 @@ export default function Blog({ theme }: BlogProps) {
                 <div className="rounded-xl overflow-hidden max-h-72 w-full">
                   <img
                     src={activeModalPost.imageUrl}
-                    alt={activeModalPost.title}
+                    alt={`${activeModalPost.title} - ${activeModalPost.category} article image`}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
