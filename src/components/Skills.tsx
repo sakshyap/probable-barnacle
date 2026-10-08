@@ -113,7 +113,7 @@ export default function Skills({ theme }: SkillsProps) {
             id="skills-section-heading"
             className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-4"
           >
-            Skills & <span className={`text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>AI Toolkit</span>
+            Digital Marketing & AI Skills
           </h2>
           <p className="text-slate-400 text-base leading-relaxed">
             Hands-on technical and marketing capabilities grouped into websites, games, AI video generation, and foundational models.

@@ -73,10 +73,7 @@ export default function Blog({ theme }: BlogProps) {
             <span>Articles & Insights</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
-            Latest Thoughts on{' '}
-            <span className={`bg-clip-text text-transparent bg-gradient-to-r ${theme?.accentGradient || 'from-violet-400 via-fuchsia-400 to-cyan-300'}`}>
-              AI & Digital Growth
-            </span>
+            Blog & AI Insights
           </h2>
           <p className="text-base sm:text-lg text-slate-400">
             Insights, tutorials, and reflections managed directly via our Admin Portal and served live to readers.

@@ -225,7 +225,7 @@ export default function Projects({ theme }: ProjectsProps) {
             id="projects-section-heading"
             className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-4"
           >
-            My <span className={`text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>Projects</span>
+            AI Projects & Games
           </h2>
           <p className="text-slate-400 text-base leading-relaxed">
             Production-grade prototypes built using generative AI prompts, code synthesis, and interactive web mechanics.

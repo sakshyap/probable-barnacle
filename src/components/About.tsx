@@ -44,7 +44,7 @@ export default function About({ onScrollTo, theme }: AboutProps) {
             id="about-section-heading"
             className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-4"
           >
-            About <span className={`text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>Sakshi</span>
+            About Sakshi Kashyap
           </h2>
           <p className="text-slate-400 text-base leading-relaxed">
             Specializing at the intersection of modern digital marketing strategies and rapid generative AI engineering.
@@ -155,6 +155,11 @@ export default function About({ onScrollTo, theme }: AboutProps) {
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
                 Empowering Brands & Products With Generative AI
               </h3>
+
+              {/* Short SEO-friendly bio: name, Digital Marketing with AI, skills */}
+              <p className="mb-4 text-slate-300 text-base leading-relaxed">
+                Sakshi Kashyap is a Digital Marketing with AI Specialist who builds responsive websites, interactive canvas games, and automated video content using generative AI tools like ChatGPT, Gemini, and Claude.
+              </p>
 
               {/* Requirement: short bio explaining I completed a Digital Marketing with AI course and love building things using AI tools */}
               <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-slate-200 text-base leading-relaxed backdrop-blur-sm">

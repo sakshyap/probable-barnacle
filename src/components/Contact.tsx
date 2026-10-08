@@ -127,7 +127,7 @@ export default function Contact({ theme }: ContactProps) {
             id="contact-section-heading"
             className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mb-4"
           >
-            Get In <span className={`text-transparent bg-clip-text bg-gradient-to-r ${accentGradient}`}>Touch</span>
+            Contact Sakshi Kashyap
           </h2>
           <p className="text-slate-400 text-base leading-relaxed">
             Have a project in mind, need digital marketing assistance with AI, or looking to collaborate? Drop me a message below.
